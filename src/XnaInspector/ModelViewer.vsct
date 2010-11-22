@@ -109,7 +109,6 @@
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidViewModel" value="0x0100" />
       <IDSymbol name="cmdidModelViewer" value="0x0101" />
-		<IDSymbol name="cmdidModelHierarchy" value="0x0102" />
     </GuidSymbol>
     
     

@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
+using EnvDTE;
+using FormosatekLtd.ModelViewer.Vsx;
 using Microsoft.Win32;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using VSLangProj;
 
 namespace FormosatekLtd.ModelViewer
 {
@@ -32,7 +36,6 @@ namespace FormosatekLtd.ModelViewer
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(ModelViewerToolWindow))]
-	[ProvideToolWindow(typeof(ModelHierarchyToolWindow))]
     [Guid(GuidList.guidModelViewerPkgString)]
 	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string)]
     public sealed class ModelViewerPackage : Package
@@ -71,45 +74,15 @@ namespace FormosatekLtd.ModelViewer
 			OleMenuCommand menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
-				string fileName = GetCurrentFileName();
+				List<string> references;
+				string fileName = GetCurrentFileName(out references);
 				if (fileName != null && IsRecognisedModelFile(fileName))
 				{
 					ModelViewerToolWindow myToolWindow = (ModelViewerToolWindow)window;
-					myToolWindow.LoadModel(fileName);
+					myToolWindow.LoadModel(fileName, references);
 				}
 			}
         }
-
-		/// <summary>
-		/// This function is called when the user clicks the menu item that shows the 
-		/// tool window. See the Initialize method to see how the menu item is associated to 
-		/// this function using the OleMenuCommandService service and the MenuCommand class.
-		/// </summary>
-		private void ShowModelHierarchyToolWindow(object sender, EventArgs e)
-		{
-			// Get the instance number 0 of this tool window. This window is single instance so this instance
-			// is actually the only one.
-			// The last flag is set to true so that if the tool window does not exists it will be created.
-			ToolWindowPane window = this.FindToolWindow(typeof(ModelHierarchyToolWindow), 0, true);
-			if ((null == window) || (null == window.Frame))
-			{
-				throw new NotSupportedException(Resources.CanNotCreateWindow);
-			}
-
-			IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-			Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-
-			/*OleMenuCommand menuCommand = sender as OleMenuCommand;
-			if (menuCommand != null)
-			{
-				string fileName = GetCurrentFileName();
-				if (fileName != null && IsRecognisedModelFile(fileName))
-				{
-					ModelHierarchyToolWindow myToolWindow = (ModelHierarchyToolWindow)window;
-					myToolWindow.LoadModel(fileName);
-				}
-			}*/
-		}
 
 
         /////////////////////////////////////////////////////////////////////////////
@@ -138,10 +111,6 @@ namespace FormosatekLtd.ModelViewer
                 CommandID toolwndCommandID = new CommandID(GuidList.guidModelViewerCmdSet, (int)PkgCmdIDList.cmdidModelViewer);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand( menuToolWin );
-				// Create the command for the tool window
-				CommandID modelHierarchyToolwndCommandID = new CommandID(GuidList.guidModelViewerCmdSet, (int)PkgCmdIDList.cmdidModelHierarchy);
-				MenuCommand menuModelHierarchyToolWin = new MenuCommand(ShowModelHierarchyToolWindow, modelHierarchyToolwndCommandID);
-				mcs.AddCommand(menuModelHierarchyToolWin);
             }
         }
         #endregion
@@ -151,7 +120,8 @@ namespace FormosatekLtd.ModelViewer
 			OleMenuCommand menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
-				string fileName = GetCurrentFileName();
+				List<string> references;
+				string fileName = GetCurrentFileName(out references);
 				if (fileName != null && IsRecognisedModelFile(fileName))
 					menuCommand.Visible = true;
 				else
@@ -159,20 +129,35 @@ namespace FormosatekLtd.ModelViewer
 			}
 		}
 
-		private static string GetCurrentFileName()
+		private static string GetCurrentFileName(out List<string> references)
 		{
+			references = null;
+
 			IntPtr hierarchyPtr, selectionContainerPtr;
 			uint projectItemId;
 			IVsMultiItemSelect mis;
 			IVsMonitorSelection monitorSelection =
 				(IVsMonitorSelection) Package.GetGlobalService(typeof (SVsShellMonitorSelection));
 			monitorSelection.GetCurrentSelection(out hierarchyPtr, out projectItemId, out mis, out selectionContainerPtr);
+			if (hierarchyPtr == IntPtr.Zero)
+				return null;
 
 			IVsHierarchy hierarchy = Marshal.GetTypedObjectForIUnknown(hierarchyPtr, typeof (IVsHierarchy)) as IVsHierarchy;
 			if (hierarchy != null)
 			{
 				string value;
 				hierarchy.GetCanonicalName(projectItemId, out value);
+
+				IVsHierarchy projectHierarchy = VsHelper.GetCurrentHierarchy((DTE) GetGlobalService(typeof (DTE)));
+				VSProject project = VsHelper.ToDteProject(projectHierarchy);
+				int referenceCount = project.References.Count;
+				references = new List<string>();
+				for (int i = 1; i <= referenceCount; ++i)
+				{
+					Reference reference = project.References.Item(i);
+					references.Add(reference.Path);
+				}
+
 				return value;
 			}
 			return null;

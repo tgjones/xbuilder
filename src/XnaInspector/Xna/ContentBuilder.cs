@@ -21,33 +21,12 @@ namespace FormosatekLtd.ModelViewer.Xna
 	{
 		#region Fields
 
-
-		// What importers or processors should we load?
-		const string xnaVersion = ", Version=4.0.0.0, PublicKeyToken=842cf8be1de50553";
-
-		static string[] pipelineAssemblies =
-        {
-            "Microsoft.Xna.Framework.Content.Pipeline.FBXImporter" + xnaVersion,
-            "Microsoft.Xna.Framework.Content.Pipeline.XImporter" + xnaVersion,
-            "Microsoft.Xna.Framework.Content.Pipeline.TextureImporter" + xnaVersion,
-            "Microsoft.Xna.Framework.Content.Pipeline.EffectImporter" + xnaVersion,
-
-            // If you want to use custom importers or processors from
-            // a Content Pipeline Extension Library, add them here.
-            //
-            // If your extension DLL is installed in the GAC, you should refer to it by assembly
-            // name, eg. "MyPipelineExtension, Version=1.0.0.0, PublicKeyToken=1234567812345678".
-            //
-            // If the extension DLL is not in the GAC, you should refer to it by
-            // file path, eg. "c:/MyProject/bin/MyPipelineExtension.dll".
-        };
-
-
 		// MSBuild objects used to dynamically build content.
 		Project buildProject;
 		ProjectRootElement projectRootElement;
 		BuildParameters buildParameters;
 		List<ProjectItem> projectItems = new List<ProjectItem>();
+		private List<ProjectItem> references = new List<ProjectItem>();
 		ErrorLogger errorLogger;
 
 
@@ -150,17 +129,12 @@ namespace FormosatekLtd.ModelViewer.Xna
 
 			buildProject = new Project(projectRootElement);
 
+			buildProject.SetProperty("Platform", "x86");
 			buildProject.SetProperty("XnaPlatform", "Windows");
 			buildProject.SetProperty("XnaProfile", "Reach");
 			buildProject.SetProperty("XnaFrameworkVersion", "v4.0");
 			buildProject.SetProperty("Configuration", "Release");
 			buildProject.SetProperty("OutputPath", outputPath);
-
-			// Register any custom importers or processors.
-			foreach (string pipelineAssembly in pipelineAssemblies)
-			{
-				buildProject.AddItem("Reference", pipelineAssembly);
-			}
 
 			// Hook up our custom error logger.
 			errorLogger = new ErrorLogger();
@@ -169,6 +143,12 @@ namespace FormosatekLtd.ModelViewer.Xna
 			buildParameters.Loggers = new ILogger[] { errorLogger };
 		}
 
+		public void SetReferences(List<string> pipelineReferences)
+		{
+			// Register any custom importers or processors.
+			foreach (string pipelineAssembly in pipelineReferences)
+				references.Add(buildProject.AddItem("Reference", pipelineAssembly)[0]);
+		}
 
 		/// <summary>
 		/// Adds a new content file to the MSBuild project. The importer and
@@ -198,8 +178,10 @@ namespace FormosatekLtd.ModelViewer.Xna
 		/// </summary>
 		public void Clear()
 		{
-			buildProject.RemoveItems(projectItems);
+			buildProject.RemoveItems(references);
+			references.Clear();
 
+			buildProject.RemoveItems(projectItems);
 			projectItems.Clear();
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
@@ -44,9 +45,9 @@ namespace FormosatekLtd.ModelViewer
 			base.Content = new ModelViewerToolWindowControl();
         }
 
-		public void LoadModel(string fileName)
+		public void LoadModel(string fileName, List<string> references)
 		{
-			((ModelViewerToolWindowControl) base.Content).LoadModel(fileName);
+			((ModelViewerToolWindowControl)base.Content).LoadModel(fileName, references);
 		}
     }
 }

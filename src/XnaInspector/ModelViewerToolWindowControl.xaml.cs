@@ -40,7 +40,7 @@ namespace FormosatekLtd.ModelViewer
 		/// <summary>
 		/// Loads a new 3D model file into the ModelViewerControl.
 		/// </summary>
-		public void LoadModel(string fileName)
+		public void LoadModel(string fileName, List<string> references)
 		{
 			Cursor = Cursors.Wait;
 
@@ -50,6 +50,7 @@ namespace FormosatekLtd.ModelViewer
 
 			// Tell the ContentBuilder what to build.
 			contentBuilder.Clear();
+			contentBuilder.SetReferences(references);
 			contentBuilder.Add(fileName, "Model", null, "ModelProcessor");
 
 			// Build this new model data.
