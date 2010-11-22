@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FormosatekLtd.ModelViewer
+namespace XnaInspector
 {
 	/// <summary>
 	/// Helper class responsible for creating and managing the GraphicsDevice.

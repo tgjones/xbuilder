@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace FormosatekLtd.ModelViewer
+namespace XnaInspector
 {
     static class GuidList
     {

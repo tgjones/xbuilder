@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 
-namespace FormosatekLtd.ModelViewer
+namespace XnaInspector
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.

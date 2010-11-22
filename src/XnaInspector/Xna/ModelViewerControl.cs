@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FormosatekLtd.ModelViewer
+namespace XnaInspector.Xna
 {
 	/// <summary>
 	/// Example control inherits from GraphicsDeviceControl, and displays

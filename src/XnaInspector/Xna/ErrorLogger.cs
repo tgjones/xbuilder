@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Build.Framework;
 
-namespace FormosatekLtd.ModelViewer.Xna
+namespace XnaInspector.Xna
 {
 	/// <summary>
 	/// Custom implementation of the MSBuild ILogger interface records

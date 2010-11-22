@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 
-namespace FormosatekLtd.ModelViewer.Vsx
+namespace XnaInspector.Vsx
 {
 	public static class VsHelper
 	{

@@ -1,8 +1,6 @@
 ﻿// PkgCmdID.cs
 // MUST match PkgCmdID.h
-using System;
-
-namespace FormosatekLtd.ModelViewer
+namespace XnaInspector
 {
     static class PkgCmdIDList
     {

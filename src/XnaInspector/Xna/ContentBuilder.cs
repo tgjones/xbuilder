@@ -7,7 +7,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 
-namespace FormosatekLtd.ModelViewer.Xna
+namespace XnaInspector.Xna
 {
 	/// <summary>
 	/// This class wraps the MSBuild functionality needed to build XNA Framework
