@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using XnaInspector.Xna;
 
-namespace XnaInspector
+namespace XnaInspector.ToolWindow
 {
     /// <summary>
     /// Interaction logic for MyControl.xaml

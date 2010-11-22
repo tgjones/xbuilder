@@ -70,7 +70,7 @@ namespace XnaInspector {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Model Viewer.
+        ///   Looks up a localized string similar to XNA Inspector.
         /// </summary>
         internal static string ToolWindowTitle {
             get {

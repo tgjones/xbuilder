@@ -128,18 +128,18 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphicsDeviceControl.cs">
+    <Compile Include="Xna\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GraphicsDeviceService.cs" />
+    <Compile Include="Xna\GraphicsDeviceService.cs" />
     <Compile Include="Vsx\VsHelper.cs" />
     <Compile Include="Xna\ModelViewerControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ModelViewerToolWindowControl.xaml.cs">
+    <Compile Include="ToolWindow\ModelViewerToolWindowControl.xaml.cs">
       <DependentUpon>ModelViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ModelViewerToolWindow.cs" />
+    <Compile Include="ToolWindow\ModelViewerToolWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -147,7 +147,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ModelViewerPackage.cs" />
+    <Compile Include="XnaInspectorPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Xna\ContentBuilder.cs" />
@@ -162,6 +162,7 @@
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -173,7 +174,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="ModelViewer.vsct">
+    <VSCTCompile Include="XnaInspector.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
@@ -185,7 +186,7 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ModelViewerToolWindowControl.xaml">
+    <Page Include="ToolWindow\ModelViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
