@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace XnaInspector
+namespace XnaInspector.Xna
 {
 	// System.Drawing and the XNA Framework both define Color and Rectangle
 	// types. To avoid conflicts, we specify exactly which ones to use.

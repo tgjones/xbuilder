@@ -43,7 +43,7 @@
 			If you do not want an image next to your command, remove the Icon node or set it to <Icon guid="guidOfficeIcon" id="msotcidNoIcon" /> -->
 			<Button guid="guidModelViewerCmdSet" id="cmdidViewModel" priority="0x0100" type="Button">
 				<Parent guid="guidModelViewerCmdSet" id="MyMenuGroup" />
-				<Icon guid="guidImages" id="bmpPic1" />
+				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
 					<CommandName>cmdidViewModel</CommandName>
 					<ButtonText>View Model</ButtonText>
@@ -52,7 +52,6 @@
 
 			<Button guid="guidModelViewerCmdSet" id="cmdidModelViewer" priority="0x0100" type="Button">
 				<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
-				<Icon guid="guidImages" id="bmpPic2" />
 				<Strings>
 					<CommandName>cmdidModelViewer</CommandName>
 					<ButtonText>XNA Inspector</ButtonText>

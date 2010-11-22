@@ -143,7 +143,7 @@ namespace XnaInspector.Xna
 			buildParameters.Loggers = new ILogger[] { errorLogger };
 		}
 
-		public void SetReferences(List<string> pipelineReferences)
+		public void SetReferences(IEnumerable<string> pipelineReferences)
 		{
 			// Register any custom importers or processors.
 			foreach (string pipelineAssembly in pipelineReferences)

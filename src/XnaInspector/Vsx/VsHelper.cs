@@ -1,89 +1,56 @@
-using System;
-using System.Diagnostics;
-using System.Xml;
+using System.Collections.Generic;
 using EnvDTE;
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 
 namespace XnaInspector.Vsx
 {
-	public static class VsHelper
+	internal static class VsHelper
 	{
-		public static IVsHierarchy GetCurrentHierarchy(DTE vs)
+		public static bool TryGetFileName(IVsHierarchy hierarchy, uint itemID, out string fileName)
 		{
-			if (vs == null) throw new InvalidOperationException("DTE not found.");
-
-			return ToHierarchy(vs.SelectedItems.Item(1).ProjectItem.ContainingProject);
-		}
-
-		public static IVsHierarchy ToHierarchy(EnvDTE.Project project)
-		{
-			if (project == null) throw new ArgumentNullException("project");
-
-			string projectGuid = null;
-
-			// DTE does not expose the project GUID that exists at in the msbuild project file.
-			// Cannot use MSBuild object model because it uses a static instance of the Engine, 
-			// and using the Project will cause it to be unloaded from the engine when the 
-			// GC collects the variable that we declare.
-			using (XmlReader projectReader = XmlReader.Create(project.FileName))
+			if (hierarchy != null)
 			{
-				projectReader.MoveToContent();
-				object nodeName = projectReader.NameTable.Add("ProjectGuid");
-				while (projectReader.Read())
+				string value;
+				if (ErrorHandler.Succeeded(hierarchy.GetCanonicalName(itemID, out value)))
 				{
-					if (Object.Equals(projectReader.LocalName, nodeName))
-					{
-						projectGuid = projectReader.ReadElementContentAsString();
-						break;
-					}
+					fileName = value;
+					return true;
 				}
 			}
-
-			Debug.Assert(!String.IsNullOrEmpty(projectGuid));
-
-			IServiceProvider serviceProvider = new ServiceProvider(project.DTE as
-				Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
-
-			return VsShellUtilities.GetHierarchy(serviceProvider, new Guid(projectGuid));
+			fileName = null;
+			return false;
 		}
 
-		public static IVsProject3 ToVsProject(EnvDTE.Project project)
+		private static VSProject GetProject(IVsHierarchy hierarchy)
 		{
-			if (project == null) throw new ArgumentNullException("project");
-
-			IVsProject3 vsProject = ToHierarchy(project) as IVsProject3;
-
-			if (vsProject == null)
+			object projectObject;
+			if (ErrorHandler.Succeeded(hierarchy.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ExtObject, out projectObject)))
 			{
-				throw new ArgumentException("Project is not a VS project.");
+				Project project = (Project) projectObject;
+				return (VSProject) project.Object;
 			}
-
-			return vsProject;
+			return null;
 		}
 
-		public static VSProject ToDteProject(IVsHierarchy hierarchy)
+		public static IEnumerable<string> GetProjectReferences(IVsHierarchy hierarchy)
 		{
-			if (hierarchy == null) throw new ArgumentNullException("hierarchy");
+			List<string> references = new List<string>();
 
-			object prjObject = null;
-			if (hierarchy.GetProperty(0xfffffffe, -2027, out prjObject) >= 0)
+			// Get project object for specified hierarchy.
+			VSProject project = GetProject(hierarchy);
+			if (project == null)
+				return references;
+
+			// Get references from project.
+			int referenceCount = project.References.Count;
+			for (int i = 1; i <= referenceCount; ++i)
 			{
-				EnvDTE.Project project = (Project) prjObject;
-				return (VSProject)project.Object;
+				Reference reference = project.References.Item(i);
+				references.Add(reference.Path);
 			}
-			else
-			{
-				throw new ArgumentException("Hierarchy is not a project.");
-			}
-		}
-
-		public static VSProject ToDteProject(IVsProject project)
-		{
-			if (project == null) throw new ArgumentNullException("project");
-
-			return ToDteProject(project as IVsHierarchy);
+			return references;
 		}
 	}
 }

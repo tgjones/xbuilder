@@ -38,9 +38,9 @@ namespace XnaInspector.ToolWindow
 			base.Content = new ModelViewerToolWindowControl();
         }
 
-		public void LoadModel(string fileName, List<string> references)
+		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
-			((ModelViewerToolWindowControl)base.Content).LoadModel(fileName, references);
+			((ModelViewerToolWindowControl)base.Content).LoadFile(fileName, references);
 		}
     }
 }

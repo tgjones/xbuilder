@@ -28,9 +28,9 @@ namespace XnaInspector.ToolWindow
         }
 
 		/// <summary>
-		/// Loads a new 3D model file into the ModelViewerControl.
+		/// Loads a new XNA asset file into the ModelViewerControl.
 		/// </summary>
-		public void LoadModel(string fileName, List<string> references)
+		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
 			Cursor = Cursors.Wait;
 
