@@ -5,39 +5,29 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace XnaInspector.Xna
+namespace XnaInspector.Xna.Rendering
 {
-	// System.Drawing and the XNA Framework both define Color and Rectangle
-	// types. To avoid conflicts, we specify exactly which ones to use.
-	
-	/// <summary>
-	/// Custom control uses the XNA Framework GraphicsDevice to render onto
-	/// a Windows Form. Derived classes can override the Initialize and Draw
-	/// methods to add their own drawing code.
-	/// </summary>
-	abstract public class GraphicsDeviceControl : Control
+	public class GraphicsDeviceControl : Control
 	{
 		#region Fields
 
-
 		// However many GraphicsDeviceControl instances you have, they all share
 		// the same underlying GraphicsDevice, managed by this helper service.
-		GraphicsDeviceService graphicsDeviceService;
+		private GraphicsDeviceService _graphicsDeviceService;
 
+		private readonly ServiceContainer _services = new ServiceContainer();
 
 		#endregion
 
 		#region Properties
-
 
 		/// <summary>
 		/// Gets a GraphicsDevice that can be used to draw onto this control.
 		/// </summary>
 		public GraphicsDevice GraphicsDevice
 		{
-			get { return graphicsDeviceService.GraphicsDevice; }
+			get { return _graphicsDeviceService.GraphicsDevice; }
 		}
-
 
 		/// <summary>
 		/// Gets an IServiceProvider containing our IGraphicsDeviceService.
@@ -46,16 +36,14 @@ namespace XnaInspector.Xna
 		/// </summary>
 		public ServiceContainer Services
 		{
-			get { return services; }
+			get { return _services; }
 		}
 
-		ServiceContainer services = new ServiceContainer();
-
+		public AssetRenderer AssetRenderer { get; set; }
 
 		#endregion
 
 		#region Initialization
-
 
 		/// <summary>
 		/// Initializes the control.
@@ -65,15 +53,12 @@ namespace XnaInspector.Xna
 			// Don't initialize the graphics device if we are running in the designer.
 			if (!DesignMode)
 			{
-				graphicsDeviceService = GraphicsDeviceService.AddRef(Handle,
+				_graphicsDeviceService = GraphicsDeviceService.AddRef(Handle,
 																	 ClientSize.Width,
 																	 ClientSize.Height);
 
 				// Register the service, so components like ContentManager can find it.
-				services.AddService(typeof(IGraphicsDeviceService), graphicsDeviceService);
-
-				// Give derived classes a chance to initialize themselves.
-				Initialize();
+				_services.AddService(typeof(IGraphicsDeviceService), _graphicsDeviceService);
 			}
 
 			base.OnCreateControl();
@@ -85,10 +70,10 @@ namespace XnaInspector.Xna
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{
-			if (graphicsDeviceService != null)
+			if (_graphicsDeviceService != null)
 			{
-				graphicsDeviceService.Release(disposing);
-				graphicsDeviceService = null;
+				_graphicsDeviceService.Release(disposing);
+				_graphicsDeviceService = null;
 			}
 
 			base.Dispose(disposing);
@@ -99,18 +84,23 @@ namespace XnaInspector.Xna
 
 		#region Paint
 
-
 		/// <summary>
 		/// Redraws the control in response to a WinForms paint message.
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			Invalidate();
 			string beginDrawError = BeginDraw();
 
 			if (string.IsNullOrEmpty(beginDrawError))
 			{
+				// Clear to the default control background color.
+				var backColor = new Microsoft.Xna.Framework.Color(BackColor.R, BackColor.G, BackColor.B);
+				GraphicsDevice.Clear(backColor);
+
 				// Draw the control using the GraphicsDevice.
-				Draw();
+				if (AssetRenderer != null)
+					AssetRenderer.Draw(GraphicsDevice);
 				EndDraw();
 			}
 			else
@@ -120,16 +110,15 @@ namespace XnaInspector.Xna
 			}
 		}
 
-
 		/// <summary>
 		/// Attempts to begin drawing the control. Returns an error message string
 		/// if this was not possible, which can happen if the graphics device is
 		/// lost, or if we are running inside the Form designer.
 		/// </summary>
-		string BeginDraw()
+		private string BeginDraw()
 		{
 			// If we have no graphics device, we must be running in the designer.
-			if (graphicsDeviceService == null)
+			if (_graphicsDeviceService == null)
 			{
 				return Text + "\n\n" + GetType();
 			}
@@ -223,7 +212,7 @@ namespace XnaInspector.Xna
 			{
 				try
 				{
-					graphicsDeviceService.ResetDevice(ClientSize.Width,
+					_graphicsDeviceService.ResetDevice(ClientSize.Width,
 													  ClientSize.Height);
 				}
 				catch (Exception e)
@@ -257,7 +246,6 @@ namespace XnaInspector.Xna
 			}
 		}
 
-
 		/// <summary>
 		/// Ignores WinForms paint-background messages. The default implementation
 		/// would clear the control to the current background color, causing
@@ -267,24 +255,6 @@ namespace XnaInspector.Xna
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 		}
-
-
-		#endregion
-
-		#region Abstract Methods
-
-
-		/// <summary>
-		/// Derived classes override this to initialize their drawing code.
-		/// </summary>
-		protected abstract void Initialize();
-
-
-		/// <summary>
-		/// Derived classes override this to draw themselves using the GraphicsDevice.
-		/// </summary>
-		protected abstract void Draw();
-
 
 		#endregion
 	}

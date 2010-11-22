@@ -7,7 +7,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 
-namespace XnaInspector.Xna
+namespace XnaInspector.Xna.Building
 {
 	/// <summary>
 	/// This class wraps the MSBuild functionality needed to build XNA Framework

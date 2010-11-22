@@ -31,7 +31,7 @@ namespace XnaInspector
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
-    [ProvideToolWindow(typeof(ModelViewerToolWindow))]
+    [ProvideToolWindow(typeof(XnaInspectorToolWindow))]
     [Guid(GuidList.guidModelViewerPkgString)]
 	[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
 
@@ -99,16 +99,16 @@ namespace XnaInspector
 			}*/
 		}
 
-		internal ModelViewerToolWindow GetInspectorWindow()
+		internal XnaInspectorToolWindow GetInspectorWindow()
 		{
 			// Get the instance number 0 of this tool window. This window is single instance so this instance
 			// is actually the only one.
 			// The last flag is set to true so that if the tool window does not exists it will be created.
-			ToolWindowPane window = FindToolWindow(typeof(ModelViewerToolWindow), 0, true);
+			ToolWindowPane window = FindToolWindow(typeof(XnaInspectorToolWindow), 0, true);
 			if (window == null || window.Frame == null)
 				throw new NotSupportedException(Resources.CanNotCreateWindow);
 
-			return (ModelViewerToolWindow) window;
+			return (XnaInspectorToolWindow) window;
 		}
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace XnaInspector
 		/// </summary>
 		private void ShowToolWindow(object sender, EventArgs e)
 		{
-			ModelViewerToolWindow window = GetInspectorWindow();
+			XnaInspectorToolWindow window = GetInspectorWindow();
 
 			IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
 			Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());

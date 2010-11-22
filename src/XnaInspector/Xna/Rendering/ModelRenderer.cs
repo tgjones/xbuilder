@@ -4,95 +4,80 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace XnaInspector.Xna
+namespace XnaInspector.Xna.Rendering
 {
 	/// <summary>
 	/// Example control inherits from GraphicsDeviceControl, and displays
 	/// a spinning 3D model. The main form class is responsible for loading
 	/// the model: this control just displays it.
 	/// </summary>
-	class ModelViewerControl : GraphicsDeviceControl
+	public class ModelRenderer : AssetRenderer
 	{
+		// Cache information about the model size and position.
+		private Matrix[] _boneTransforms;
+		private Vector3 _modelCenter;
+		private float _modelRadius;
+
+		// Timer controls the rotation speed.
+		private Stopwatch _timer;
+
+		private Model _model;
+
 		/// <summary>
 		/// Gets or sets the current model.
 		/// </summary>
 		public Model Model
 		{
-			get { return model; }
+			get { return _model; }
 
 			set
 			{
-				model = value;
-
-				if (model != null)
-				{
+				_model = value;
+				if (_model != null)
 					MeasureModel();
-				}
 			}
 		}
 
-		Model model;
-
-
-		// Cache information about the model size and position.
-		Matrix[] boneTransforms;
-		Vector3 modelCenter;
-		float modelRadius;
-
-
-		// Timer controls the rotation speed.
-		Stopwatch timer;
-
-
-		/// <summary>
-		/// Initializes the control.
-		/// </summary>
-		protected override void Initialize()
+		public ModelRenderer(Control parentControl)
 		{
 			// Start the animation timer.
-			timer = Stopwatch.StartNew();
+			_timer = Stopwatch.StartNew();
 
 			// Hook the idle event to constantly redraw our animation.
-			Application.Idle += delegate { Invalidate(); };
+			Application.Idle += delegate { parentControl.Invalidate(); };
 		}
-
 
 		/// <summary>
 		/// Draws the control.
 		/// </summary>
-		protected override void Draw()
+		public override void Draw(GraphicsDevice graphicsDevice)
 		{
-			// Clear to the default control background color.
-			Color backColor = new Color(BackColor.R, BackColor.G, BackColor.B);
-
-			GraphicsDevice.Clear(backColor);
-
-			if (model != null)
+			if (_model != null)
 			{
 				// Compute camera matrices.
-				float rotation = (float)timer.Elapsed.TotalSeconds;
+				float rotation = (float)_timer.Elapsed.TotalSeconds;
 
-				Vector3 eyePosition = modelCenter;
+				Vector3 eyePosition = _modelCenter;
 
-				eyePosition.Z += modelRadius * 2;
-				eyePosition.Y += modelRadius;
+				eyePosition.Z += _modelRadius * 2;
+				eyePosition.Y += _modelRadius;
 
-				float aspectRatio = GraphicsDevice.Viewport.AspectRatio;
+				float aspectRatio = graphicsDevice.Viewport.AspectRatio;
 
-				float nearClip = modelRadius / 100;
-				float farClip = modelRadius * 100;
+				float nearClip = _modelRadius / 100;
+				float farClip = _modelRadius * 100;
 
 				Matrix world = Matrix.CreateRotationY(rotation);
-				Matrix view = Matrix.CreateLookAt(eyePosition, modelCenter, Vector3.Up);
+				Matrix view = Matrix.CreateLookAt(eyePosition, _modelCenter, Vector3.Up);
 				Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, aspectRatio,
 																	nearClip, farClip);
 
 				// Draw the model.
-				foreach (ModelMesh mesh in model.Meshes)
+				foreach (ModelMesh mesh in _model.Meshes)
 				{
 					foreach (BasicEffect effect in mesh.Effects)
 					{
-						effect.World = boneTransforms[mesh.ParentBone.Index] * world;
+						effect.World = _boneTransforms[mesh.ParentBone.Index] * world;
 						effect.View = view;
 						effect.Projection = projection;
 
@@ -106,50 +91,49 @@ namespace XnaInspector.Xna
 			}
 		}
 
-
 		/// <summary>
 		/// Whenever a new model is selected, we examine it to see how big
 		/// it is and where it is centered. This lets us automatically zoom
 		/// the display, so we can correctly handle models of any scale.
 		/// </summary>
-		void MeasureModel()
+		private void MeasureModel()
 		{
 			// Look up the absolute bone transforms for this model.
-			boneTransforms = new Matrix[model.Bones.Count];
+			_boneTransforms = new Matrix[_model.Bones.Count];
 
-			model.CopyAbsoluteBoneTransformsTo(boneTransforms);
+			_model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
 
 			// Compute an (approximate) model center position by
 			// averaging the center of each mesh bounding sphere.
-			modelCenter = Vector3.Zero;
+			_modelCenter = Vector3.Zero;
 
-			foreach (ModelMesh mesh in model.Meshes)
+			foreach (ModelMesh mesh in _model.Meshes)
 			{
 				BoundingSphere meshBounds = mesh.BoundingSphere;
-				Matrix transform = boneTransforms[mesh.ParentBone.Index];
+				Matrix transform = _boneTransforms[mesh.ParentBone.Index];
 				Vector3 meshCenter = Vector3.Transform(meshBounds.Center, transform);
 
-				modelCenter += meshCenter;
+				_modelCenter += meshCenter;
 			}
 
-			modelCenter /= model.Meshes.Count;
+			_modelCenter /= _model.Meshes.Count;
 
 			// Now we know the center point, we can compute the model radius
 			// by examining the radius of each mesh bounding sphere.
-			modelRadius = 0;
+			_modelRadius = 0;
 
-			foreach (ModelMesh mesh in model.Meshes)
+			foreach (ModelMesh mesh in _model.Meshes)
 			{
 				BoundingSphere meshBounds = mesh.BoundingSphere;
-				Matrix transform = boneTransforms[mesh.ParentBone.Index];
+				Matrix transform = _boneTransforms[mesh.ParentBone.Index];
 				Vector3 meshCenter = Vector3.Transform(meshBounds.Center, transform);
 
 				float transformScale = transform.Forward.Length();
 
-				float meshRadius = (meshCenter - modelCenter).Length() +
+				float meshRadius = (meshCenter - _modelCenter).Length() +
 								   (meshBounds.Radius * transformScale);
 
-				modelRadius = Math.Max(modelRadius, meshRadius);
+				_modelRadius = Math.Max(_modelRadius, meshRadius);
 			}
 		}
 	}

@@ -128,20 +128,24 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Xna\AssetType.cs" />
     <Compile Include="Vsx\FileExtensionUtility.cs" />
     <Compile Include="Vsx\SelectionEventListener.cs" />
-    <Compile Include="Xna\GraphicsDeviceControl.cs">
+    <Compile Include="Xna\AssetHandler.cs" />
+    <Compile Include="Xna\AssetHandlers.cs" />
+    <Compile Include="Xna\ModelHandler.cs" />
+    <Compile Include="Xna\Rendering\AssetRenderer.cs" />
+    <Compile Include="Xna\Rendering\TextureRenderer.cs" />
+    <Compile Include="Xna\Rendering\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Xna\GraphicsDeviceService.cs" />
+    <Compile Include="Xna\Rendering\GraphicsDeviceService.cs" />
     <Compile Include="Vsx\VsHelper.cs" />
-    <Compile Include="Xna\ModelViewerControl.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Xna\Rendering\ModelRenderer.cs" />
+    <Compile Include="ToolWindow\XnaInspectorToolWindowControl.xaml.cs">
+      <DependentUpon>XnaInspectorToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindow\ModelViewerToolWindowControl.xaml.cs">
-      <DependentUpon>ModelViewerToolWindowControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindow\ModelViewerToolWindow.cs" />
+    <Compile Include="ToolWindow\XnaInspectorToolWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -152,8 +156,9 @@
     <Compile Include="XnaInspectorPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Xna\ContentBuilder.cs" />
-    <Compile Include="Xna\ErrorLogger.cs" />
+    <Compile Include="Xna\Building\ContentBuilder.cs" />
+    <Compile Include="Xna\Building\ErrorLogger.cs" />
+    <Compile Include="Xna\TextureHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -188,7 +193,7 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ToolWindow\ModelViewerToolWindowControl.xaml">
+    <Page Include="ToolWindow\XnaInspectorToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

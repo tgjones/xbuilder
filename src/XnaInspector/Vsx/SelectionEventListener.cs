@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using XnaInspector.Xna;
 
 namespace XnaInspector.Vsx
 {

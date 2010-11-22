@@ -14,12 +14,12 @@ namespace XnaInspector.ToolWindow
     /// implementation of the IVsUIElementPane interface.
     /// </summary>
     [Guid("f358ad4b-049b-4aa3-9646-f13e5e5722f9")]
-    public class ModelViewerToolWindow : ToolWindowPane
+    public class XnaInspectorToolWindow : ToolWindowPane
     {
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
-        public ModelViewerToolWindow() :
+        public XnaInspectorToolWindow() :
             base(null)
         {
             // Set the window title reading it from the resources.

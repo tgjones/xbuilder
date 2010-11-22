@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace XnaInspector.Xna
+namespace XnaInspector.Xna.Rendering
 {
 	/// <summary>
 	/// Helper class responsible for creating and managing the GraphicsDevice.
@@ -12,13 +12,12 @@ namespace XnaInspector.Xna
 	/// interface, which provides notification events for when the device is reset
 	/// or disposed.
 	/// </summary>
-	class GraphicsDeviceService : IGraphicsDeviceService
+	internal class GraphicsDeviceService : IGraphicsDeviceService
 	{
 		#region Fields
 
-
 		// Singleton device service instance.
-		static GraphicsDeviceService singletonInstance;
+		private static GraphicsDeviceService singletonInstance;
 
 
 		// Keep track of how many controls are sharing the singletonInstance.
