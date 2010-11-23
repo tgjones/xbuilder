@@ -128,6 +128,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Vsx\ModelEditorFactory.cs" />
+    <Compile Include="Vsx\ModelEditorPane.cs" />
+    <Compile Include="Vsx\SimpleEditorFactory.cs" />
+    <Compile Include="Vsx\SimpleEditorPane.cs" />
     <Compile Include="Xna\AssetType.cs" />
     <Compile Include="Vsx\FileExtensionUtility.cs" />
     <Compile Include="Vsx\SelectionEventListener.cs" />

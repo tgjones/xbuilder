@@ -34,6 +34,9 @@ namespace XnaInspector
     [ProvideToolWindow(typeof(XnaInspectorToolWindow))]
     [Guid(GuidList.guidModelViewerPkgString)]
 	[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
+	[ProvideEditorFactory(typeof(ModelEditorFactory), 200, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+	[ProvideEditorExtension(typeof(ModelEditorFactory), ".*", 32)]
+	[ProvideEditorLogicalView(typeof(ModelEditorFactory), GuidList.GuidModelEditorLogicalView)]
 
 	#endregion
 	public sealed class XnaInspectorPackage : Package
@@ -60,6 +63,8 @@ namespace XnaInspector
         {
         	Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
         	base.Initialize();
+
+        	RegisterEditorFactory(new ModelEditorFactory());
 
         	// Add our command handlers for menu (commands must exist in the .vsct file)
         	OleMenuCommandService mcs = GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
