@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XnaInspector.Xna.Camera;
 
 namespace XnaInspector.Xna.Rendering
 {
@@ -18,8 +19,7 @@ namespace XnaInspector.Xna.Rendering
 		private Vector3 _modelCenter;
 		private float _modelRadius;
 
-		// Timer controls the rotation speed.
-		private Stopwatch _timer;
+		private readonly TrackBallController _ballController;
 
 		private Model _model;
 
@@ -35,16 +35,30 @@ namespace XnaInspector.Xna.Rendering
 				_model = value;
 				if (_model != null)
 					MeasureModel();
+				_ballController.ResetOrientation();
 			}
 		}
 
 		public ModelRenderer(Control parentControl)
 		{
-			// Start the animation timer.
-			_timer = Stopwatch.StartNew();
+			// Camera stuff.
+			_ballController = new TrackBallController(1.0f, parentControl.ClientSize.Width, parentControl.ClientSize.Height);
 
-			// Hook the idle event to constantly redraw our animation.
-			Application.Idle += delegate { parentControl.Invalidate(); };
+			parentControl.MouseDown += (sender, e) => _ballController.MouseDown(ToXnaPoint(e.Location));
+			parentControl.MouseMove += (sender, e) =>
+			{
+				_ballController.MouseMove(ToXnaPoint(e.Location));
+				parentControl.Invalidate();
+			};
+			parentControl.MouseUp += (sender, e) => _ballController.MouseUp(ToXnaPoint(e.Location));
+
+			parentControl.Resize +=
+				(sender, e) => _ballController.Resize(parentControl.ClientSize.Width, parentControl.ClientSize.Height);
+		}
+
+		private static Point ToXnaPoint(System.Drawing.Point p)
+		{
+			return new Point(p.X, p.Y);
 		}
 
 		/// <summary>
@@ -55,10 +69,7 @@ namespace XnaInspector.Xna.Rendering
 			if (_model != null)
 			{
 				// Compute camera matrices.
-				float rotation = (float)_timer.Elapsed.TotalSeconds;
-
 				Vector3 eyePosition = _modelCenter;
-
 				eyePosition.Z += _modelRadius * 2;
 				eyePosition.Y += _modelRadius;
 
@@ -67,10 +78,10 @@ namespace XnaInspector.Xna.Rendering
 				float nearClip = _modelRadius / 100;
 				float farClip = _modelRadius * 100;
 
-				Matrix world = Matrix.CreateRotationY(rotation);
+				Matrix world = Matrix.CreateFromQuaternion(_ballController.CurrentQuaternion);
 				Matrix view = Matrix.CreateLookAt(eyePosition, _modelCenter, Vector3.Up);
 				Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, aspectRatio,
-																	nearClip, farClip);
+					nearClip, farClip);
 
 				// Draw the model.
 				foreach (ModelMesh mesh in _model.Meshes)

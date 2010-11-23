@@ -135,6 +135,7 @@
     <Compile Include="Xna\AssetHandlers.cs" />
     <Compile Include="Xna\ModelHandler.cs" />
     <Compile Include="Xna\Rendering\AssetRenderer.cs" />
+    <Compile Include="Xna\Camera\TrackBallController.cs" />
     <Compile Include="Xna\Rendering\TextureRenderer.cs" />
     <Compile Include="Xna\Rendering\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
