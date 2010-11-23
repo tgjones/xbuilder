@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,6 +14,7 @@ namespace XnaInspector.ToolWindow
     	private readonly ContentBuilder _contentBuilder;
 		private readonly ContentManager _contentManager;
 
+    	private bool _loaded;
     	private AssetHandlers _assetHandlers;
 
         public ModelViewerToolWindowControl()
@@ -25,6 +27,7 @@ namespace XnaInspector.ToolWindow
         	Loaded += (sender, e) =>
         	{
         		_assetHandlers = new AssetHandlers(_contentManager, graphicsDeviceControl);
+				_loaded = true;
         	};
         }
 
@@ -33,6 +36,9 @@ namespace XnaInspector.ToolWindow
 		/// </summary>
 		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
+			if (!_loaded)
+				return;
+
 			Cursor = Cursors.Wait;
 
 			// Unload any existing content.
@@ -44,7 +50,12 @@ namespace XnaInspector.ToolWindow
 			// Tell the ContentBuilder what to build.
 			_contentBuilder.Clear();
 			_contentBuilder.SetReferences(references);
-			_contentBuilder.Add(fileName, "Asset", null, assetHandler.ProcessorName);
+
+			string assetName = fileName;
+			foreach (char c in Path.GetInvalidFileNameChars())
+				assetName = assetName.Replace(c.ToString(), string.Empty);
+			assetName = Path.GetFileNameWithoutExtension(assetName);
+			_contentBuilder.Add(fileName, assetName, null, assetHandler.ProcessorName);
 
 			// Build this new model data.
 			string buildError = _contentBuilder.Build();
@@ -53,7 +64,7 @@ namespace XnaInspector.ToolWindow
 			{
 				// If the build succeeded, use the ContentManager to
 				// load the temporary .xnb file that we just created.
-				assetHandler.LoadContent("Asset");
+				assetHandler.LoadContent(assetName);
 				graphicsDeviceControl.AssetRenderer = assetHandler.Renderer;
 			}
 			else

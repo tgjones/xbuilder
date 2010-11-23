@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
@@ -17,51 +18,44 @@ namespace XnaInspector.Xna.Building
 	/// in a temporary directory. After the build finishes, you can use a regular
 	/// ContentManager to load these temporary .xnb files in the usual way.
 	/// </summary>
-	class ContentBuilder : IDisposable
+	internal class ContentBuilder : IDisposable
 	{
 		#region Fields
 
 		// MSBuild objects used to dynamically build content.
-		Project buildProject;
-		ProjectRootElement projectRootElement;
-		BuildParameters buildParameters;
-		List<ProjectItem> projectItems = new List<ProjectItem>();
-		private List<ProjectItem> references = new List<ProjectItem>();
-		ErrorLogger errorLogger;
-
+		private Project _buildProject;
+		private ProjectRootElement _projectRootElement;
+		private BuildParameters _buildParameters;
+		private readonly List<ProjectItem> _projectItems = new List<ProjectItem>();
+		private readonly List<ProjectItem> _references = new List<ProjectItem>();
+		private ErrorLogger _errorLogger;
 
 		// Temporary directories used by the content build.
-		string buildDirectory;
-		string processDirectory;
-		string baseDirectory;
-
+		private string _buildDirectory;
+		private string _processDirectory;
+		private string _baseDirectory;
 
 		// Generate unique directory names if there is more than one ContentBuilder.
-		static int directorySalt;
-
+		private static int _directorySalt;
 
 		// Have we been disposed?
-		bool isDisposed;
-
+		private bool _isDisposed;
 
 		#endregion
 
 		#region Properties
-
 
 		/// <summary>
 		/// Gets the output directory, which will contain the generated .xnb files.
 		/// </summary>
 		public string OutputDirectory
 		{
-			get { return Path.Combine(buildDirectory, "bin/Content"); }
+			get { return Path.Combine(_buildDirectory, "bin/Content"); }
 		}
-
 
 		#endregion
 
 		#region Initialization
-
 
 		/// <summary>
 		/// Creates a new content builder.
@@ -98,56 +92,53 @@ namespace XnaInspector.Xna.Building
 		/// </summary>
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!isDisposed)
+			if (!_isDisposed)
 			{
-				isDisposed = true;
+				_isDisposed = true;
 
 				DeleteTempDirectory();
 			}
 		}
 
-
 		#endregion
 
 		#region MSBuild
 
-
 		/// <summary>
 		/// Creates a temporary MSBuild content project in memory.
 		/// </summary>
-		void CreateBuildProject()
+		private void CreateBuildProject()
 		{
-			string projectPath = Path.Combine(buildDirectory, "content.contentproj");
-			string outputPath = Path.Combine(buildDirectory, "bin");
+			string projectPath = Path.Combine(_buildDirectory, "content.contentproj");
+			string outputPath = Path.Combine(_buildDirectory, "bin");
 
 			// Create the build project.
-			projectRootElement = ProjectRootElement.Create(projectPath);
+			_projectRootElement = ProjectRootElement.Create(projectPath);
 
 			// Include the standard targets file that defines how to build XNA Framework content.
-			projectRootElement.AddImport("$(MSBuildExtensionsPath)\\Microsoft\\XNA Game Studio\\" +
-										 "v4.0\\Microsoft.Xna.GameStudio.ContentPipeline.targets");
+			_projectRootElement.AddImport("$(MSBuildExtensionsPath)\\Microsoft\\XNA Game Studio\\"
+				+ "v4.0\\Microsoft.Xna.GameStudio.ContentPipeline.targets");
 
-			buildProject = new Project(projectRootElement);
+			_buildProject = new Project(_projectRootElement);
 
-			buildProject.SetProperty("Platform", "x86");
-			buildProject.SetProperty("XnaPlatform", "Windows");
-			buildProject.SetProperty("XnaProfile", "Reach");
-			buildProject.SetProperty("XnaFrameworkVersion", "v4.0");
-			buildProject.SetProperty("Configuration", "Release");
-			buildProject.SetProperty("OutputPath", outputPath);
+			_buildProject.SetProperty("XnaPlatform", "Windows");
+			_buildProject.SetProperty("XnaProfile", "Reach");
+			_buildProject.SetProperty("XnaFrameworkVersion", "v4.0");
+			_buildProject.SetProperty("Configuration", "Release");
+			_buildProject.SetProperty("OutputPath", outputPath);
 
 			// Hook up our custom error logger.
-			errorLogger = new ErrorLogger();
+			_errorLogger = new ErrorLogger();
 
-			buildParameters = new BuildParameters(ProjectCollection.GlobalProjectCollection);
-			buildParameters.Loggers = new ILogger[] { errorLogger };
+			_buildParameters = new BuildParameters(ProjectCollection.GlobalProjectCollection);
+			_buildParameters.Loggers = new ILogger[] { _errorLogger };
 		}
 
 		public void SetReferences(IEnumerable<string> pipelineReferences)
 		{
 			// Register any custom importers or processors.
 			foreach (string pipelineAssembly in pipelineReferences)
-				references.Add(buildProject.AddItem("Reference", pipelineAssembly)[0]);
+				_references.Add(_buildProject.AddItem("Reference", pipelineAssembly)[0]);
 		}
 
 		/// <summary>
@@ -158,7 +149,11 @@ namespace XnaInspector.Xna.Building
 		/// </summary>
 		public void Add(string filename, string name, string importer, string processor)
 		{
-			ProjectItem item = buildProject.AddItem("Compile", filename)[0];
+			// If item has already been added, don't need to add it again.
+			if (_projectItems.Any(pi => pi.UnevaluatedInclude == filename))
+				return;
+
+			ProjectItem item = _buildProject.AddItem("Compile", filename)[0];
 
 			item.SetMetadataValue("Link", Path.GetFileName(filename));
 			item.SetMetadataValue("Name", name);
@@ -169,22 +164,17 @@ namespace XnaInspector.Xna.Building
 			if (!string.IsNullOrEmpty(processor))
 				item.SetMetadataValue("Processor", processor);
 
-			projectItems.Add(item);
+			_projectItems.Add(item);
 		}
 
-
 		/// <summary>
-		/// Removes all content files from the MSBuild project.
+		/// Removes all references from the MSBuild project so that we can start again.
 		/// </summary>
 		public void Clear()
 		{
-			buildProject.RemoveItems(references);
-			references.Clear();
-
-			buildProject.RemoveItems(projectItems);
-			projectItems.Clear();
+			_buildProject.RemoveItems(_references);
+			_references.Clear();
 		}
-
 
 		/// <summary>
 		/// Builds all the content files which have been added to the project,
@@ -194,12 +184,12 @@ namespace XnaInspector.Xna.Building
 		public string Build()
 		{
 			// Clear any previous errors.
-			errorLogger.Errors.Clear();
+			_errorLogger.Errors.Clear();
 
 			// Create and submit a new asynchronous build request.
-			BuildManager.DefaultBuildManager.BeginBuild(buildParameters);
+			BuildManager.DefaultBuildManager.BeginBuild(_buildParameters);
 
-			BuildRequestData request = new BuildRequestData(buildProject.CreateProjectInstance(), new string[0]);
+			BuildRequestData request = new BuildRequestData(_buildProject.CreateProjectInstance(), new string[0]);
 			BuildSubmission submission = BuildManager.DefaultBuildManager.PendBuildRequest(request);
 
 			submission.ExecuteAsync(null, null);
@@ -211,29 +201,25 @@ namespace XnaInspector.Xna.Building
 
 			// If the build failed, return an error string.
 			if (submission.BuildResult.OverallResult == BuildResultCode.Failure)
-			{
-				return string.Join("\n", errorLogger.Errors.ToArray());
-			}
+				return string.Join("\n", _errorLogger.Errors.ToArray());
 
 			return null;
 		}
-
 
 		#endregion
 
 		#region Temp Directories
 
-
 		/// <summary>
 		/// Creates a temporary directory in which to build content.
 		/// </summary>
-		void CreateTempDirectory()
+		private void CreateTempDirectory()
 		{
 			// Start with a standard base name:
 			//
 			//  %temp%\WinFormsContentLoading.ContentBuilder
 
-			baseDirectory = Path.Combine(Path.GetTempPath(), GetType().FullName);
+			_baseDirectory = Path.Combine(Path.GetTempPath(), GetType().FullName);
 
 			// Include our process ID, in case there is more than
 			// one copy of the program running at the same time:
@@ -242,53 +228,42 @@ namespace XnaInspector.Xna.Building
 
 			int processId = Process.GetCurrentProcess().Id;
 
-			processDirectory = Path.Combine(baseDirectory, processId.ToString());
+			_processDirectory = Path.Combine(_baseDirectory, processId.ToString());
 
 			// Include a salt value, in case the program
 			// creates more than one ContentBuilder instance:
 			//
 			//  %temp%\WinFormsContentLoading.ContentBuilder\<ProcessId>\<Salt>
 
-			directorySalt++;
+			_directorySalt++;
 
-			buildDirectory = Path.Combine(processDirectory, directorySalt.ToString());
+			_buildDirectory = Path.Combine(_processDirectory, _directorySalt.ToString());
 
 			// Create our temporary directory.
-			Directory.CreateDirectory(buildDirectory);
+			Directory.CreateDirectory(_buildDirectory);
 
-			try
-			{
-				PurgeStaleTempDirectories();
-			}
-			catch
-			{
-				// TODO: Probably shouldn't do this.
-			}
+			PurgeStaleTempDirectories();
 		}
-
 
 		/// <summary>
 		/// Deletes our temporary directory when we are finished with it.
 		/// </summary>
-		void DeleteTempDirectory()
+		private void DeleteTempDirectory()
 		{
-			Directory.Delete(buildDirectory, true);
+			Directory.Delete(_buildDirectory, true);
 
 			// If there are no other instances of ContentBuilder still using their
 			// own temp directories, we can delete the process directory as well.
-			if (Directory.GetDirectories(processDirectory).Length == 0)
+			if (Directory.GetDirectories(_processDirectory).Length == 0)
 			{
-				Directory.Delete(processDirectory);
+				Directory.Delete(_processDirectory);
 
 				// If there are no other copies of the program still using their
 				// own temp directories, we can delete the base directory as well.
-				if (Directory.GetDirectories(baseDirectory).Length == 0)
-				{
-					Directory.Delete(baseDirectory);
-				}
+				if (Directory.GetDirectories(_baseDirectory).Length == 0)
+					Directory.Delete(_baseDirectory);
 			}
 		}
-
 
 		/// <summary>
 		/// Ideally, we want to delete our temp directory when we are finished using
@@ -301,10 +276,10 @@ namespace XnaInspector.Xna.Building
 		/// down cleanly. This makes sure these orphaned directories will not just
 		/// be left lying around forever.
 		/// </summary>
-		void PurgeStaleTempDirectories()
+		private void PurgeStaleTempDirectories()
 		{
 			// Check all subdirectories of our base location.
-			foreach (string directory in Directory.GetDirectories(baseDirectory))
+			foreach (string directory in Directory.GetDirectories(_baseDirectory))
 			{
 				// The subdirectory name is the ID of the process which created it.
 				int processId;
@@ -324,7 +299,6 @@ namespace XnaInspector.Xna.Building
 				}
 			}
 		}
-
 
 		#endregion
 	}
