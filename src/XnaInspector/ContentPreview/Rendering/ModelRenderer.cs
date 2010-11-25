@@ -19,7 +19,7 @@ namespace XnaInspector.Xna.Rendering
 		private Vector3 _modelCenter;
 		private float _modelRadius;
 
-		private readonly TrackBallController _ballController;
+		private readonly CameraController _ballController;
 
 		private Model _model;
 
@@ -42,7 +42,7 @@ namespace XnaInspector.Xna.Rendering
 		public ModelRenderer(Control parentControl)
 		{
 			// Camera stuff.
-			_ballController = new TrackBallController(1.0f, parentControl.ClientSize.Width, parentControl.ClientSize.Height);
+			_ballController = new CameraController();
 
 			parentControl.MouseDown += (sender, e) => _ballController.MouseDown(ToXnaPoint(e.Location));
 			parentControl.MouseMove += (sender, e) =>
@@ -51,9 +51,6 @@ namespace XnaInspector.Xna.Rendering
 				parentControl.Invalidate();
 			};
 			parentControl.MouseUp += (sender, e) => _ballController.MouseUp(ToXnaPoint(e.Location));
-
-			parentControl.Resize +=
-				(sender, e) => _ballController.Resize(parentControl.ClientSize.Width, parentControl.ClientSize.Height);
 		}
 
 		private static Point ToXnaPoint(System.Drawing.Point p)
@@ -78,7 +75,7 @@ namespace XnaInspector.Xna.Rendering
 				float nearClip = _modelRadius / 100;
 				float farClip = _modelRadius * 100;
 
-				Matrix world = Matrix.CreateFromQuaternion(_ballController.CurrentQuaternion);
+				Matrix world = _ballController.CurrentOrientation;
 				Matrix view = Matrix.CreateLookAt(eyePosition, _modelCenter, Vector3.Up);
 				Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, aspectRatio,
 					nearClip, farClip);

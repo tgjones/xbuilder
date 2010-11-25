@@ -6,6 +6,7 @@ namespace XnaInspector.Xna
 {
 	public class AssetHandlers
 	{
+		private XnaInspectorPackage _package;
 		private readonly ModelHandler _modelHandler;
 		private readonly TextureHandler _textureHandler;
 
@@ -15,9 +16,14 @@ namespace XnaInspector.Xna
 			_textureHandler = new TextureHandler(contentManager, graphicsDeviceControl);
 		}
 
+		public void Initialize(XnaInspectorPackage package)
+		{
+			_package = package;
+		}
+
 		public AssetHandler GetAssetHandler(string fileName)
 		{
-			AssetType assetType = FileExtensionUtility.GetAssetType(fileName);
+			AssetType assetType = FileExtensionUtility.GetAssetType(_package, fileName);
 			switch (assetType)
 			{
 				case AssetType.Effect :

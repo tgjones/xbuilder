@@ -1,62 +1,44 @@
+using System;
 using System.IO;
+using System.Linq;
+using Microsoft.VisualStudio.Shell;
 using XnaInspector.Xna;
 
 namespace XnaInspector.Vsx
 {
 	internal static class FileExtensionUtility
 	{
-		public static bool IsInspectableFile(string fileName)
+		public static bool IsInspectableFile(XnaInspectorPackage package, string fileName)
 		{
-			// TODO: Add an options page, to let the user configure this.
-			if (fileName == null)
-				return false;
-
-			string extension = Path.GetExtension(fileName);
-			if (extension == null)
-				return false;
-
-			switch (extension.ToLower())
-			{
-				case ".fbx":
-				case ".x":
-				case ".3ds":
-				case ".obj":
-				case ".nff":
-				case ".tga":
-				case ".bmp":
-				case ".jpg":
-				case ".jpeg":
-				case ".fx":
-				case ".stitchedeffect":
-					return true;
-				default:
-					return false;
-			}
+			return GetAssetType(package, fileName) != AssetType.None;
 		}
 
-		public static AssetType GetAssetType(string fileName)
+		public static AssetType GetAssetType(XnaInspectorPackage package, string fileName)
 		{
-			// TODO: Add an options page, to let the user configure this.
 			string extension = Path.GetExtension(fileName);
-			switch (extension.ToLower())
+			if (extension == null)
+				return AssetType.None;
+
+			extension = extension.ToLower();
+
+			XBuilderOptions options = package.GetOptions();
+			if (options.ModelExtensions != null)
 			{
-				case ".fbx":
-				case ".x":
-				case ".3ds":
-				case ".obj":
-				case ".nff":
+				string[] modelExtensions = options.ModelExtensions.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+				if (modelExtensions.Any(e => e.Trim() == extension))
 					return AssetType.Model;
-				case ".tga":
-				case ".bmp":
-				case ".jpg":
-				case ".jpeg":
-					return AssetType.Texture;
-				case ".fx":
-				case ".stitchedeffect":
-					return AssetType.Effect;
-				default :
-					return AssetType.None;
 			}
+
+			if (options.TextureExtensions != null)
+			{
+				string[] textureExtensions = options.TextureExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				if (textureExtensions.Any(e => e.Trim() == extension))
+					return AssetType.Texture;
+			}
+
+			// TODO: Support effects.
+
+			return AssetType.None;
 		}
 	}
 }

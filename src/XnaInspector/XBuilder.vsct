@@ -21,23 +21,11 @@
 		with command ids defined by other packages. -->
 
 		<Menus>
-			<Menu guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbar" type="ToolWindowToolbar">
+			<Menu guid="guidTWToolbarCmdSet" id="TWToolbar" type="ToolWindowToolbar">
 				<CommandFlag>DefaultDocked</CommandFlag>
 				<Strings>
 					<ButtonText>Test Toolbar</ButtonText>
 					<CommandName>Test Toolbar</CommandName>
-				</Strings>
-			</Menu>
-
-			<Menu guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuController" type="MenuControllerLatched">
-				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
-				<CommandFlag>DefaultDocked</CommandFlag>
-				<CommandFlag>IconAndText</CommandFlag>
-				<CommandFlag>TextChanges</CommandFlag>
-				<CommandFlag>TextIsAnchorCommand</CommandFlag>
-				<Strings>
-					<ButtonText>Test Toolbar</ButtonText>
-					<CommandName>Test Toolbar2</CommandName>
 				</Strings>
 			</Menu>
 		</Menus>
@@ -47,16 +35,12 @@
 		group as the part of a menu contained between two lines. The parent of a group 
 		must be a menu. -->
 		<Groups>
-			<Group guid="guidModelViewerCmdSet" id="menuidSolutionContextMenuGroup" priority="0x0400">
+			<Group guid="guidModelViewerCmdSet" id="MyMenuGroup" priority="0x0600">
 				<Parent guid="guidSolutionExplorerMenu" id="menuidSolutionExplorerMenu"/>
 			</Group>
 
-			<Group guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup" priority="0x000">
-				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbar"/>
-			</Group>
-
-			<Group guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuGroup" priority="0x100">
-				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuController"/>
+			<Group guid="guidTWToolbarCmdSet" id="TWToolbarGroup" priority="0x0000">
+				<Parent guid="guidTWToolbarCmdSet" id="TWToolbar"/>
 			</Group>
 		</Groups>
 
@@ -64,39 +48,44 @@
 		<!--This section defines the elements the user can interact with, like a menu command or a button 
         or combo box in a toolbar. -->
 		<Buttons>
-			<!-- Content Preview -->
-				<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeSolid" priority="0x0101" type="Button">
-					<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuGroup"/>
-					<Strings>
-						<CommandName>cmdidContentPreviewToolbarFillMode</CommandName>
-						<ButtonText>Solid</ButtonText>
-					</Strings>
-				</Button>
-
-			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeWireframe" priority="0x0102" type="Button">
-				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuGroup"/>
+			<!--To define a menu group you have to specify its ID, the parent menu and its display priority. 
+			The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
+			the CommandFlag node.
+			You can add more than one CommandFlag node e.g.:
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+			If you do not want an image next to your command, remove the Icon node or set it to <Icon guid="guidOfficeIcon" id="msotcidNoIcon" /> -->
+			<Button guid="guidModelViewerCmdSet" id="cmdidViewModel" priority="0x0100" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="MyMenuGroup" />
+				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
-					<CommandName>cmdidContentPreviewToolbarFillModeSolid</CommandName>
-					<ButtonText>Wireframe</ButtonText>
+					<CommandName>cmdidViewModel</CommandName>
+					<ButtonText>View Model</ButtonText>
 				</Strings>
 			</Button>
 
 			<Button guid="guidModelViewerCmdSet" id="cmdidModelViewer" priority="0x0100" type="Button">
 				<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
-				<Icon guid="guidImages" id="bmpContentPreview" />
 				<Strings>
 					<CommandName>cmdidModelViewer</CommandName>
-					<ButtonText>Content Preview</ButtonText>
+					<ButtonText>XNA Inspector</ButtonText>
 				</Strings>
 			</Button>
 
-			<Button guid="guidModelViewerCmdSet" id="cmdidSolutionContextMenuPreviewContent" priority="0x0100" type="Button">
-				<Parent guid="guidModelViewerCmdSet" id="menuidSolutionContextMenuGroup"/>
-				<Icon guid="guidImages" id="bmpContentPreview" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentExplorer" priority="0x0100" type="Button">
+				<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
 				<Strings>
-					<CommandName>cmdidSolutionContextMenuPreviewContent</CommandName>
-					<ButtonText>Preview</ButtonText>
+					<CommandName>cmdidContentExplorer</CommandName>
+					<ButtonText>XNA Content Explorer</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidTWToolbarCmdSet" id="cmdidTWTestCommand" priority="0x0100" type="Button">
+				<Parent guid="guidTWToolbarCmdSet" id="TWToolbarGroup"/>
+				<Icon guid="guidImages" id="bmpPic1" />
+				<Strings>
+					<CommandName>cmdidTWTestCmd</CommandName>
+					<ButtonText>TWTest Command</ButtonText>
 				</Strings>
 			</Button>
 		</Buttons>
@@ -108,7 +97,7 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-			<Bitmap guid="guidImages" href="Resources\ZoomHS.png" usedList="bmpContentPreview" />
+			<Bitmap guid="guidImages" href="Resources\Images_32bit.bmp" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows"/>
 		</Bitmaps>
 	</Commands>
 
@@ -118,21 +107,24 @@
 
 		<!-- This is the guid used to group the menu commands together -->
 		<GuidSymbol name="guidModelViewerCmdSet" value="{bfa7aea4-2696-4bcb-9fbf-31eb90b28c60}">
-			<IDSymbol name="menuidSolutionContextMenuGroup" value="0x1020" />
-			<IDSymbol name="cmdidSolutionContextMenuPreviewContent" value="0x101" />
-			
-			<IDSymbol name="cmdidModelViewer" value="0x0102" />
+			<IDSymbol name="MyMenuGroup" value="0x1020" />
+			<IDSymbol name="cmdidViewModel" value="0x0100" />
+			<IDSymbol name="cmdidModelViewer" value="0x0101" />
+			<IDSymbol name="cmdidContentExplorer" value="0x0102" />
+		</GuidSymbol>
 
-			<IDSymbol name="cmdidContentPreviewToolbar" value="0x1050" />
-			<IDSymbol name="cmdidContentPreviewToolbarGroup" value="0x1051" />
-			<IDSymbol name="cmdidContentPreviewToolbarFillModeMenuController" value="0x1070" />
-			<IDSymbol name="cmdidContentPreviewToolbarFillModeMenuGroup" value="0x1071" />
-			<IDSymbol name="cmdidContentPreviewToolbarFillModeSolid" value="0x1072" />
-			<IDSymbol name="cmdidContentPreviewToolbarFillModeWireframe" value="0x1073" />
+		<GuidSymbol name="guidTWToolbarCmdSet" value="{6E22BAFE-CCB5-4BF2-9702-B7C60DFD9866}">
+			<IDSymbol name="TWToolbar" value="0x1000" />
+			<IDSymbol name="TWToolbarGroup" value="0x1050" />
+			<IDSymbol name="cmdidTWTestCommand" value="0x0103" />
 		</GuidSymbol>
 
 		<GuidSymbol name="guidImages" value="{72f94ffa-50c5-4b0b-9c4e-6feb83c65e97}" >
-			<IDSymbol name="bmpContentPreview" value="1" />
+			<IDSymbol name="bmpPic1" value="1" />
+			<IDSymbol name="bmpPic2" value="2" />
+			<IDSymbol name="bmpPicSearch" value="3" />
+			<IDSymbol name="bmpPicX" value="4" />
+			<IDSymbol name="bmpPicArrows" value="5" />
 		</GuidSymbol>
 
 		<GuidSymbol name="guidSolutionExplorerMenu" value="{D309F791-903F-11D0-9EFC-00A0C911004F}">

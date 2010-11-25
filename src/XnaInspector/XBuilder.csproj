@@ -8,8 +8,8 @@
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XnaInspector</RootNamespace>
-    <AssemblyName>XnaInspector</AssemblyName>
+    <RootNamespace>XBuilder</RootNamespace>
+    <AssemblyName>XBuilder</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -128,30 +128,30 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentPreview\ContentPreviewIntegrationManager.cs" />
-    <Compile Include="ContentPreview\ContentPreviewService.cs" />
-    <Compile Include="ContentPreview\IContentPreviewService.cs" />
-    <Compile Include="XBuilderOptions.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ToolWindow\ContentExplorerToolWindow.cs" />
+    <Compile Include="Vsx\ModelEditorFactory.cs" />
+    <Compile Include="Vsx\ModelEditorPane.cs" />
+    <Compile Include="Vsx\SimpleEditorFactory.cs" />
+    <Compile Include="Vsx\SimpleEditorPane.cs" />
     <Compile Include="Xna\AssetType.cs" />
     <Compile Include="Vsx\FileExtensionUtility.cs" />
+    <Compile Include="Vsx\SelectionEventListener.cs" />
     <Compile Include="Xna\AssetHandler.cs" />
     <Compile Include="Xna\AssetHandlers.cs" />
     <Compile Include="Xna\ModelHandler.cs" />
-    <Compile Include="ContentPreview\Rendering\AssetRenderer.cs" />
-    <Compile Include="ContentPreview\Rendering\CameraController.cs" />
-    <Compile Include="ContentPreview\Rendering\TextureRenderer.cs" />
-    <Compile Include="ContentPreview\Rendering\GraphicsDeviceControl.cs">
+    <Compile Include="Xna\Rendering\AssetRenderer.cs" />
+    <Compile Include="Xna\Camera\TrackBallController.cs" />
+    <Compile Include="Xna\Rendering\TextureRenderer.cs" />
+    <Compile Include="Xna\Rendering\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ContentPreview\Rendering\GraphicsDeviceService.cs" />
+    <Compile Include="Xna\Rendering\GraphicsDeviceService.cs" />
     <Compile Include="Vsx\VsHelper.cs" />
-    <Compile Include="ContentPreview\Rendering\ModelRenderer.cs" />
-    <Compile Include="ContentPreview\ContentPreviewToolWindowControl.xaml.cs">
+    <Compile Include="Xna\Rendering\ModelRenderer.cs" />
+    <Compile Include="ToolWindows\ContentPreview\ContentPreviewToolWindowControl.xaml.cs">
       <DependentUpon>ContentPreviewToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ContentPreview\ContentPreviewToolWindow.cs" />
+    <Compile Include="ToolWindows\ContentPreview\ContentPreviewToolWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -187,9 +187,8 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="XnaInspector.vsct">
+    <VSCTCompile Include="XBuilder.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
-      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,11 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Package.ico" />
-    <Resource Include="Resources\ZoomHS.png" />
-    <None Include="Resources\Zoom.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ContentPreview\ContentPreviewToolWindowControl.xaml">
+    <Page Include="ToolWindows\ContentPreview\ContentPreviewToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

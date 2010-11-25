@@ -11,5 +11,10 @@
 		<WindowsFormsHost x:Name="windowsFormsHost">
 			<Rendering:GraphicsDeviceControl x:Name="graphicsDeviceControl" />
 		</WindowsFormsHost>
-    </Grid>
+		<TextBlock x:Name="txtInfo" TextWrapping="Wrap" Margin="20"
+				   HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+				   ScrollViewer.VerticalScrollBarVisibility="Auto">
+			I only show something after you right-click a file in a content project and Preview it, innit.
+		</TextBlock>
+	</Grid>
 </UserControl>

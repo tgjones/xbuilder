@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.Design;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -89,7 +90,7 @@ namespace XnaInspector.Xna.Rendering
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			Invalidate();
+			//Invalidate();
 			string beginDrawError = BeginDraw();
 
 			if (string.IsNullOrEmpty(beginDrawError))
@@ -166,7 +167,7 @@ namespace XnaInspector.Xna.Rendering
 				Rectangle sourceRectangle = new Rectangle(0, 0, ClientSize.Width,
 																ClientSize.Height);
 
-				GraphicsDevice.Present(sourceRectangle, null, this.Handle);
+				GraphicsDevice.Present(sourceRectangle, null, Handle);
 			}
 			catch
 			{
@@ -257,5 +258,13 @@ namespace XnaInspector.Xna.Rendering
 		}
 
 		#endregion
+
+		public void ChangeFillMode(bool wireframe)
+		{
+			this._graphicsDeviceService.GraphicsDevice.RasterizerState = new RasterizerState
+			{
+				FillMode = (wireframe) ? FillMode.WireFrame : FillMode.Solid
+			};
+		}
 	}
 }

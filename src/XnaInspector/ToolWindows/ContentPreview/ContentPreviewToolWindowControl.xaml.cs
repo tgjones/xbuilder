@@ -4,12 +4,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xna.Framework.Content;
-using XnaInspector.Xna;
-using XnaInspector.Xna.Building;
+using XBuilder.Xna;
+using XBuilder.Xna.Building;
 
-namespace XnaInspector.ToolWindow
+namespace XBuilder.ToolWindows.ContentPreview
 {
-    public partial class ModelViewerToolWindowControl : UserControl
+    public partial class ContentPreviewToolWindowControl : UserControl
     {
     	private readonly ContentBuilder _contentBuilder;
 		private readonly ContentManager _contentManager;
@@ -17,18 +17,18 @@ namespace XnaInspector.ToolWindow
     	private bool _loaded;
     	private AssetHandlers _assetHandlers;
 
-        public ModelViewerToolWindowControl()
+        public ContentPreviewToolWindowControl()
         {
         	InitializeComponent();
 
 			_contentBuilder = new ContentBuilder();
-			_contentManager = new ContentManager(graphicsDeviceControl.Services, _contentBuilder.OutputDirectory);
+			/*_contentManager = new ContentManager(graphicsDeviceControl.Services, _contentBuilder.OutputDirectory);
 
         	Loaded += (sender, e) =>
         	{
         		_assetHandlers = new AssetHandlers(_contentManager, graphicsDeviceControl);
 				_loaded = true;
-        	};
+        	};*/
         }
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace XnaInspector.ToolWindow
 		/// </summary>
 		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
-			if (!_loaded)
+			/*if (!_loaded)
 				return;
 
 			Cursor = Cursors.Wait;
@@ -73,7 +73,7 @@ namespace XnaInspector.ToolWindow
 				MessageBox.Show(buildError, "Error");
 			}
 
-			Cursor = Cursors.Arrow;
+			Cursor = Cursors.Arrow;*/
 		}
     }
 }

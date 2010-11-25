@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace XnaInspector.ToolWindow
+namespace XBuilder.ToolWindows.ContentPreview
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -14,16 +15,15 @@ namespace XnaInspector.ToolWindow
     /// implementation of the IVsUIElementPane interface.
     /// </summary>
     [Guid("f358ad4b-049b-4aa3-9646-f13e5e5722f9")]
-    public class XnaInspectorToolWindow : ToolWindowPane
+    public class ContentPreviewToolWindow : ToolWindowPane
     {
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
-        public XnaInspectorToolWindow() :
+        public ContentPreviewToolWindow() :
             base(null)
         {
-            // Set the window title reading it from the resources.
-            this.Caption = Resources.ToolWindowTitle;
+            Caption = "XNA Content Preview";
             // Set the image that will appear on the tab of the window frame
             // when docked with an other window
             // The resource ID correspond to the one defined in the resx file
@@ -32,15 +32,16 @@ namespace XnaInspector.ToolWindow
             this.BitmapResourceID = 301;
             this.BitmapIndex = 1;
 
-            // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
-            // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
-            // the object returned by the Content property.
-			base.Content = new ModelViewerToolWindowControl();
+        	this.ToolBar = new CommandID(
+        		GuidList.guidTWToolbarCmdSet,
+        		PkgCmdIDList.TWToolbar);
+
+			base.Content = new ContentPreviewToolWindowControl();
         }
 
 		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
-			((ModelViewerToolWindowControl)base.Content).LoadFile(fileName, references);
+			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, references);
 		}
     }
 }

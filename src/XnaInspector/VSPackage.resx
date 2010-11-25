@@ -127,10 +127,13 @@
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Package.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="301" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Images_24bit.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="303" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZoomHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="200" xml:space="preserve">
-    <value>XBuilder Model Editor</value>
+  <data name="120" xml:space="preserve">
+    <value>XBuilder</value>
+  </data>
+  <data name="121" xml:space="preserve">
+    <value>General</value>
   </data>
 </root>

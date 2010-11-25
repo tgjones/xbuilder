@@ -12,6 +12,9 @@ namespace XnaInspector
 
         public static readonly Guid guidModelViewerCmdSet = new Guid(guidModelViewerCmdSetString);
 
+    	//public const string guidContentPreviewToolbarCmdSetString = "B69B565E-A1B2-4716-8B59-7DE9D2299F31";
+    	//public static readonly Guid guidContentPreviewToolbarCmdSet = new Guid(guidContentPreviewToolbarCmdSetString);
+
     	public const string GuidModelEditorLogicalView = "F3A60F97-E9A3-4FDC-B68A-8BF55D356EC1";
 		public const string GuidModelEditorFactory = "D85DF2A5-F52E-4F1C-943F-6F9AF4689740";
     };
