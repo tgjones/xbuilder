@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using XBuilder.Options;
 using XBuilder.Vsx;
 
 namespace XBuilder.ContentPreview
@@ -10,10 +11,12 @@ namespace XBuilder.ContentPreview
 	public class ContentPreviewIntegrationManager
 	{
 		private readonly XBuilderPackage _package;
+		private readonly IOptionsService _optionsService;
 
 		public ContentPreviewIntegrationManager(XBuilderPackage package)
 		{
 			_package = package;
+			_optionsService = package.GetService<IOptionsService>();
 		}
 
 		public void Initialize()
@@ -42,7 +45,7 @@ namespace XBuilder.ContentPreview
 			IVsHierarchy hierarchy;
 			string fileName;
 			menuCommand.Visible = GetSelectedFileDetails(menuCommand, out hierarchy, out fileName) 
-				&& FileExtensionUtility.IsInspectableFile(_package, fileName);
+				&& FileExtensionUtility.IsInspectableFile(_optionsService, fileName);
 		}
 
 		private void OnContextMenuPreviewContent(object sender, EventArgs e)

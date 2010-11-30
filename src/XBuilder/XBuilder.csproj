@@ -131,7 +131,15 @@
     <Compile Include="ContentPreview\ContentPreviewIntegrationManager.cs" />
     <Compile Include="ContentPreview\ContentPreviewService.cs" />
     <Compile Include="ContentPreview\IContentPreviewService.cs" />
-    <Compile Include="XBuilderOptions.cs">
+    <Compile Include="ContentPreview\Rendering\CubeRenderer.cs" />
+    <Compile Include="ContentPreview\Rendering\GridRenderer.cs" />
+    <Compile Include="ContentPreview\Rendering\ModelRendererWidget.cs" />
+    <Compile Include="Options\IOptionsService.cs" />
+    <Compile Include="Options\OptionsService.cs" />
+    <Compile Include="Options\XBuilderOptionsContentPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Options\XBuilderOptionsGeneral.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Xna\AssetType.cs" />
@@ -179,6 +187,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Xna\CubeTexture.xnb" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

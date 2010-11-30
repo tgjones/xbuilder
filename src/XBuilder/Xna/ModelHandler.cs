@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using System;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using XBuilder.ContentPreview.Rendering;
 
@@ -32,6 +33,11 @@ namespace XBuilder.Xna
 		public override void LoadContent(string assetName)
 		{
 			_modelRenderer.Model = ContentManager.Load<Model>(assetName);
+		}
+
+		public void Initialize(XBuilderPackage package)
+		{
+			_modelRenderer.Package = package;
 		}
 	}
 }

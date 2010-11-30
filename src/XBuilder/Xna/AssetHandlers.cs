@@ -1,12 +1,13 @@
 using Microsoft.Xna.Framework.Content;
 using XBuilder.ContentPreview.Rendering;
+using XBuilder.Options;
 using XBuilder.Vsx;
 
 namespace XBuilder.Xna
 {
 	public class AssetHandlers
 	{
-		private XBuilderPackage _package;
+		private IOptionsService _optionsService;
 		private readonly ModelHandler _modelHandler;
 		private readonly TextureHandler _textureHandler;
 
@@ -18,12 +19,13 @@ namespace XBuilder.Xna
 
 		public void Initialize(XBuilderPackage package)
 		{
-			_package = package;
+			_optionsService = package.GetService<IOptionsService>();
+			_modelHandler.Initialize(package);
 		}
 
 		public AssetHandler GetAssetHandler(string fileName)
 		{
-			AssetType assetType = FileExtensionUtility.GetAssetType(_package, fileName);
+			AssetType assetType = FileExtensionUtility.GetAssetType(_optionsService, fileName);
 			switch (assetType)
 			{
 				case AssetType.Effect :

@@ -136,4 +136,7 @@
   <data name="121" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="122" xml:space="preserve">
+    <value>Content Preview</value>
+  </data>
 </root>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using XBuilder.Options;
 using XBuilder.Vsx;
 
 namespace XBuilder.ContentPreview
@@ -9,10 +10,12 @@ namespace XBuilder.ContentPreview
 	public class ContentPreviewService : IContentPreviewService
 	{
 		private readonly XBuilderPackage _package;
+		private readonly IOptionsService _optionsService;
 
 		public ContentPreviewService(XBuilderPackage package)
 		{
 			_package = package;
+			_optionsService = package.GetService<IOptionsService>();
 		}
 
 		private ContentPreviewToolWindow GetInspectorWindow()
@@ -29,7 +32,7 @@ namespace XBuilder.ContentPreview
 
 		public void ShowPreview(IVsHierarchy hierarchy, string fileName)
 		{
-			if (FileExtensionUtility.IsInspectableFile(_package, fileName))
+			if (FileExtensionUtility.IsInspectableFile(_optionsService, fileName))
 			{
 				ContentPreviewToolWindow window = ShowPreviewInternal();
 

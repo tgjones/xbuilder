@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using XBuilder.ContentPreview;
+using XBuilder.Options;
 
 namespace XBuilder
 {
@@ -19,7 +21,8 @@ namespace XBuilder
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(ContentPreviewToolWindow))]
-	[ProvideOptionPage(typeof(XBuilderOptions), "XBuilder", "General", 120, 121, true)]
+	[ProvideOptionPage(typeof(XBuilderOptionsGeneral), "XBuilder", "General", 120, 121, true)]
+	[ProvideOptionPage(typeof(XBuilderOptionsContentPreview), "XBuilder", "ContentPreview", 120, 122, true)]
     [Guid(GuidList.guidModelViewerPkgString)]
 	[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
 
@@ -39,21 +42,26 @@ namespace XBuilder
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
-        	IContentPreviewService contentPreviewService = new ContentPreviewService(this);
-        	((IServiceContainer) this).AddService(typeof (IContentPreviewService), contentPreviewService);
+        	AddService<IOptionsService>(new OptionsService(this));
+			AddService<IContentPreviewService>(new ContentPreviewService(this));
 
         	_contentPreviewIntegrationManager = new ContentPreviewIntegrationManager(this);
         }
+
+		public void AddService<TService>(object serviceInstance)
+		{
+			((IServiceContainer) this).AddService(typeof (TService), serviceInstance);
+		}
 
 		public TService GetService<TService>()
 		{
 			return (TService) GetService(typeof(TService));
 		}
 
-    	public XBuilderOptions GetOptions()
-    	{
-			return GetAutomationObject("XBuilder.General") as XBuilderOptions;
-    	}
+		public T GetAutomationObject<T>(string name)
+		{
+			return (T) GetAutomationObject(name);
+		}
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place

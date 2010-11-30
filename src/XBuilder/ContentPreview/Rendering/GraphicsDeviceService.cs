@@ -41,6 +41,7 @@ namespace XBuilder.ContentPreview.Rendering
 			parameters.DepthStencilFormat = DepthFormat.Depth24;
 			parameters.DeviceWindowHandle = windowHandle;
 			parameters.PresentationInterval = PresentInterval.Immediate;
+			parameters.MultiSampleCount = 4;
 			parameters.IsFullScreen = false;
 
 			graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,

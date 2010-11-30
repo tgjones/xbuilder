@@ -69,6 +69,13 @@ namespace XBuilder {
             }
         }
         
+        internal static byte[] CubeTexture {
+            get {
+                object obj = ResourceManager.GetObject("CubeTexture", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Content Preview.
         /// </summary>

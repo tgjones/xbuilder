@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -15,7 +16,7 @@ namespace XBuilder.ContentPreview.Rendering
 		// the same underlying GraphicsDevice, managed by this helper service.
 		private GraphicsDeviceService _graphicsDeviceService;
 
-		private readonly ServiceContainer _services = new ServiceContainer();
+		private ServiceContainer _services;
 
 		#endregion
 
@@ -64,6 +65,10 @@ namespace XBuilder.ContentPreview.Rendering
 			base.OnCreateControl();
 		}
 
+		public void Initialize(IServiceProvider serviceProvider)
+		{
+			_services = new ServiceContainer(serviceProvider);
+		}
 
 		/// <summary>
 		/// Disposes the control.
@@ -159,7 +164,7 @@ namespace XBuilder.ContentPreview.Rendering
 		/// the finished image onto the screen, using the appropriate WinForms
 		/// control handle to make sure it shows up in the right place.
 		/// </summary>
-		void EndDraw()
+		private void EndDraw()
 		{
 			try
 			{
@@ -183,7 +188,7 @@ namespace XBuilder.ContentPreview.Rendering
 		/// that the device is not lost. Returns an error string if the device
 		/// could not be reset.
 		/// </summary>
-		string HandleDeviceReset()
+		private string HandleDeviceReset()
 		{
 			bool deviceNeedsReset = false;
 
@@ -260,10 +265,17 @@ namespace XBuilder.ContentPreview.Rendering
 
 		public void ChangeFillMode(bool wireframe)
 		{
-			this._graphicsDeviceService.GraphicsDevice.RasterizerState = new RasterizerState
-			{
-				FillMode = (wireframe) ? FillMode.WireFrame : FillMode.Solid
-			};
+			if (AssetRenderer != null)
+				AssetRenderer.ChangeFillMode(wireframe);
+			Invalidate();
+		}
+
+		public event MouseWheelEventHandler MouseWheelWpf;
+
+		public void RaiseMouseWheel(MouseWheelEventArgs mouseWheelEventArgs)
+		{
+			if (MouseWheelWpf != null)
+				MouseWheelWpf(this, mouseWheelEventArgs);
 		}
 	}
 }

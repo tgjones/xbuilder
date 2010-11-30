@@ -15,6 +15,11 @@ namespace XBuilder.ContentPreview.Rendering
 		private float _xAngle;
 		private float _yAngle;
 
+		public bool IsMouseButtonDown
+		{
+			get { return _mouseButtonDown; }
+		}
+
 		public Matrix CurrentOrientation
 		{
 			get { return Matrix.CreateRotationY(_xAngle) * Matrix.CreateRotationX(_yAngle); }
@@ -37,7 +42,7 @@ namespace XBuilder.ContentPreview.Rendering
 			_mouseButtonDown = false;
 		}
 
-		public void MouseMove(Point location)
+		public bool MouseMove(Point location)
 		{
 			if (_mouseButtonDown)
 			{
@@ -45,7 +50,10 @@ namespace XBuilder.ContentPreview.Rendering
 				_yAngle += (location.Y - _mouseDownPoint.Y)/100.0f;
 
 				_mouseDownPoint = location;
+
+				return true;
 			}
+			return false;
 		}
 	}
 }

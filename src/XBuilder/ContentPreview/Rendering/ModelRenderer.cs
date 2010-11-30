@@ -1,5 +1,5 @@
 using System;
-using System.Windows.Forms;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,11 +15,15 @@ namespace XBuilder.ContentPreview.Rendering
 		// Cache information about the model size and position.
 		private Matrix[] _boneTransforms;
 		private Vector3 _modelCenter;
+		private Vector3 _cameraPosition;
+		private Vector3 _viewDirection;
 		private float _modelRadius;
 
 		private readonly CameraController _ballController;
+		private ModelRendererWidget[] _widgets;
 
 		private Model _model;
+		private bool _wireframe;
 
 		/// <summary>
 		/// Gets or sets the current model.
@@ -37,23 +41,27 @@ namespace XBuilder.ContentPreview.Rendering
 			}
 		}
 
-		public ModelRenderer(Control parentControl)
+		public XBuilderPackage Package { get; set; }
+
+		public ModelRenderer(GraphicsDeviceControl parentControl)
 		{
-			// Camera stuff.
 			_ballController = new CameraController();
 
-			parentControl.MouseDown += (sender, e) => _ballController.MouseDown(ToXnaPoint(e.Location));
-			parentControl.MouseMove += (sender, e) =>
+			parentControl.MouseWheelWpf += (sender, e) =>
 			{
-				_ballController.MouseMove(ToXnaPoint(e.Location));
+				_cameraPosition += _viewDirection * e.Delta * _modelRadius * 0.001f;
 				parentControl.Invalidate();
 			};
-			parentControl.MouseUp += (sender, e) => _ballController.MouseUp(ToXnaPoint(e.Location));
+
+			_widgets = new ModelRendererWidget[2];
+			_widgets[0] = new GridRenderer(parentControl);
+			_widgets[1] = new CubeRenderer(parentControl, _ballController);
 		}
 
-		private static Point ToXnaPoint(System.Drawing.Point p)
+		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)
 		{
-			return new Point(p.X, p.Y);
+			foreach (ModelRendererWidget widget in _widgets)
+				widget.Initialize(serviceProvider, graphicsDevice);
 		}
 
 		/// <summary>
@@ -63,20 +71,23 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 			if (_model != null)
 			{
-				// Compute camera matrices.
-				Vector3 eyePosition = _modelCenter;
-				eyePosition.Z += _modelRadius * 2;
-				eyePosition.Y += _modelRadius;
-
 				float aspectRatio = graphicsDevice.Viewport.AspectRatio;
 
 				float nearClip = _modelRadius / 100;
 				float farClip = _modelRadius * 100;
 
-				Matrix world = _ballController.CurrentOrientation;
-				Matrix view = Matrix.CreateLookAt(eyePosition, _modelCenter, Vector3.Up);
+				Matrix world = Matrix.Identity;
+				Matrix view = _ballController.CurrentOrientation * Matrix.CreateLookAt(_cameraPosition, _cameraPosition + _viewDirection, Vector3.Up);
 				Matrix projection = Matrix.CreatePerspectiveFieldOfView(1, aspectRatio,
 					nearClip, farClip);
+
+				foreach (ModelRendererWidget widget in _widgets.Where(w => w.RenderPosition == WidgetRenderPosition.BeforeModel))
+					widget.Draw(graphicsDevice, _ballController.CurrentOrientation, view, projection);
+
+				graphicsDevice.RasterizerState = new RasterizerState
+				{
+					FillMode = (_wireframe) ? FillMode.WireFrame : FillMode.Solid
+				};
 
 				// Draw the model.
 				foreach (ModelMesh mesh in _model.Meshes)
@@ -94,7 +105,15 @@ namespace XBuilder.ContentPreview.Rendering
 
 					mesh.Draw();
 				}
+
+				foreach (ModelRendererWidget widget in _widgets.Where(w => w.RenderPosition == WidgetRenderPosition.AfterModel))
+					widget.Draw(graphicsDevice, _ballController.CurrentOrientation, view, projection);
 			}
+		}
+
+		public override void ChangeFillMode(bool wireframe)
+		{
+			_wireframe = wireframe;
 		}
 
 		/// <summary>
@@ -141,6 +160,14 @@ namespace XBuilder.ContentPreview.Rendering
 
 				_modelRadius = Math.Max(_modelRadius, meshRadius);
 			}
+
+			// Compute camera matrices.
+			Vector3 eyePosition = _modelCenter;
+			eyePosition.Z += _modelRadius * 2;
+			//eyePosition.Y += _modelRadius;
+
+			_cameraPosition = eyePosition;
+			_viewDirection = Vector3.Normalize(_modelCenter - _cameraPosition);
 		}
 	}
 }

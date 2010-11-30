@@ -16,8 +16,9 @@ namespace XBuilder.ContentPreview
 {
     public partial class ContentPreviewToolWindowControl : UserControl
     {
-    	private readonly ContentBuilder _contentBuilder;
-		private readonly ContentManager _contentManager;
+    	private ContentBuilder _contentBuilder;
+		private ContentManager _contentManager;
+    	private XBuilderPackage _package;
 
     	private bool _loaded;
     	private AssetHandlers _assetHandlers;
@@ -32,24 +33,26 @@ namespace XBuilder.ContentPreview
         		out vsBackColor);
         	System.Drawing.Color backColor = System.Drawing.ColorTranslator.FromWin32((int) vsBackColor);
 			graphicsDeviceControl.BackColor = backColor;
+        }
 
+		public void Initialize(XBuilderPackage package)
+		{
+			_package = package;
+			graphicsDeviceControl.Initialize(_package);
 			_contentBuilder = new ContentBuilder();
 			_contentManager = new ContentManager(graphicsDeviceControl.Services, _contentBuilder.OutputDirectory);
 
 			Loaded += (sender, e) =>
-        	{
+			{
 				if (!_loaded) // Can't find a WPF event which only fires once when the window is FIRST loaded.
 				{
 					_assetHandlers = new AssetHandlers(_contentManager, graphicsDeviceControl);
 					windowsFormsHost.Visibility = Visibility.Collapsed;
 					_loaded = true;
-				}
-        	};
-        }
 
-		public void Initialize(XBuilderPackage package)
-		{
-			Loaded += (sender, e) => _assetHandlers.Initialize(package);
+					_assetHandlers.Initialize(package);
+				}
+			};
 		}
 
 		/// <summary>
@@ -93,6 +96,8 @@ namespace XBuilder.ContentPreview
 					// If the build succeeded, use the ContentManager to
 					// load the temporary .xnb file that we just created.
 					assetHandler.LoadContent(assetName);
+
+					assetHandler.Renderer.Initialize(graphicsDeviceControl.Services, graphicsDeviceControl.GraphicsDevice);
 					graphicsDeviceControl.AssetRenderer = assetHandler.Renderer;
 				}
 
@@ -141,5 +146,10 @@ namespace XBuilder.ContentPreview
     	{
     		graphicsDeviceControl.ChangeFillMode(wireframe);
     	}
+
+		protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
+		{
+			graphicsDeviceControl.RaiseMouseWheel(e);
+		}
     }
 }

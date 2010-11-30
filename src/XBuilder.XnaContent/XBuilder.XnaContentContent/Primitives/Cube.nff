@@ -1,0 +1,5 @@
+﻿# A material
+f 0.4 0.4 0.2 0.8 0.2 16 0
+
+# A cube at 0 0 0 with a 'size' of 100
+x-cube 0 0 0 100

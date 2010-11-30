@@ -1,18 +1,19 @@
 using System;
 using System.IO;
 using System.Linq;
+using XBuilder.Options;
 using XBuilder.Xna;
 
 namespace XBuilder.Vsx
 {
 	internal static class FileExtensionUtility
 	{
-		public static bool IsInspectableFile(XBuilderPackage package, string fileName)
+		public static bool IsInspectableFile(IOptionsService optionsService, string fileName)
 		{
-			return GetAssetType(package, fileName) != AssetType.None;
+			return GetAssetType(optionsService, fileName) != AssetType.None;
 		}
 
-		public static AssetType GetAssetType(XBuilderPackage package, string fileName)
+		public static AssetType GetAssetType(IOptionsService optionsService, string fileName)
 		{
 			string extension = Path.GetExtension(fileName);
 			if (extension == null)
@@ -20,7 +21,7 @@ namespace XBuilder.Vsx
 
 			extension = extension.ToLower();
 
-			XBuilderOptions options = package.GetOptions();
+			XBuilderOptionsGeneral options = optionsService.GetGeneralOptions();
 			if (options.ModelExtensions != null)
 			{
 				string[] modelExtensions = options.ModelExtensions.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
