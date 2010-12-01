@@ -15,5 +15,6 @@
 		public const int cmdidContentPreviewToolbarFillModeWireframe = 0x1073;
 
 		public const int cmdidContentPreviewToolbarNormals = 0x1074;
+		public const int cmdidContentPreviewToolbarAlphaBlend = 0x1075;
 	}
 }

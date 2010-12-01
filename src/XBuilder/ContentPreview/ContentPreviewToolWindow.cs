@@ -21,6 +21,7 @@ namespace XBuilder.ContentPreview
 		private OleMenuCommand _fillModeSolid;
 		private OleMenuCommand _fillModeWireframe;
     	private OleMenuCommand _normals;
+		private OleMenuCommand _alphaBlend;
 
     	private bool _wireframe;
 
@@ -59,6 +60,7 @@ namespace XBuilder.ContentPreview
 				_fillModeSolid = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolid, ChangeFillModeSolid);
 				_fillModeWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeWireframe, ChangeFillModeWireframe);
 				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
+				_alphaBlend = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarAlphaBlend, ToggleAlphaBlend);
 			}
 
 			((ContentPreviewToolWindowControl)base.Content).Initialize((XBuilderPackage) Package);
@@ -92,6 +94,12 @@ namespace XBuilder.ContentPreview
 			ShowNormals();
 		}
 
+		private void ToggleAlphaBlend(object sender, EventArgs e)
+		{
+			_alphaBlend.Checked = !_alphaBlend.Checked;
+			ToggleAlphaBlend();
+		}
+
 		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
 			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, references);
@@ -111,6 +119,11 @@ namespace XBuilder.ContentPreview
 		private void ShowNormals()
 		{
 			((ContentPreviewToolWindowControl)base.Content).ShowNormals(_normals.Checked);
+		}
+
+		private void ToggleAlphaBlend()
+		{
+			((ContentPreviewToolWindowControl)base.Content).ToggleAlphaBlend(_alphaBlend.Checked);
 		}
     }
 }

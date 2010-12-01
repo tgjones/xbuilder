@@ -21,5 +21,10 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 
 		}
+
+		public virtual void ToggleAlphaBlend(bool show)
+		{
+
+		}
 	}
 }

@@ -277,6 +277,13 @@ namespace XBuilder.ContentPreview.Rendering
 			Invalidate();
 		}
 
+		public void ToggleAlphaBlend(bool show)
+		{
+			if (AssetRenderer != null)
+				AssetRenderer.ToggleAlphaBlend(show);
+			Invalidate();
+		}
+
 		public event MouseWheelEventHandler MouseWheelWpf;
 
 		public void RaiseMouseWheel(MouseWheelEventArgs mouseWheelEventArgs)

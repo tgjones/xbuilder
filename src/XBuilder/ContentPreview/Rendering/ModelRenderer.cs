@@ -34,6 +34,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 		private Model _model;
 		private bool _wireframe;
+		private bool _alphaBlend;
 
 		/// <summary>
 		/// Gets or sets the current model.
@@ -103,28 +104,80 @@ namespace XBuilder.ContentPreview.Rendering
 					FillMode = (_wireframe) ? FillMode.WireFrame : FillMode.Solid
 				};
 
+				graphicsDevice.BlendState = _alphaBlend ? BlendState.AlphaBlend : BlendState.Opaque;
+
 				// Draw the model.
+				DrawModel(true, world, view, projection);
+
 				foreach (ModelMesh mesh in _model.Meshes)
-				{
-					foreach (BasicEffect effect in mesh.Effects)
-					{
-						effect.World = _boneTransforms[mesh.ParentBone.Index] * world;
-						effect.View = view;
-						effect.Projection = projection;
-
-						effect.EnableDefaultLighting();
-						effect.PreferPerPixelLighting = true;
-						effect.SpecularPower = 16;
-					}
-
-					mesh.Draw();
-
 					foreach (ModelRendererWidget widget in _widgets)
 						widget.OnEndDrawMesh(graphicsDevice, mesh, _boneTransforms[mesh.ParentBone.Index], view, projection);
-				}
+
+				DrawModel(false, world, view, projection);
+
+				graphicsDevice.BlendState = BlendState.Opaque;
 
 				foreach (ModelRendererWidget widget in _widgets.Where(w => w.RenderPosition == WidgetRenderPosition.AfterModel))
 					widget.Draw(graphicsDevice, _ballController.CurrentOrientation, view, projection);
+			}
+		}
+
+		private void DrawModel(bool opaque, Matrix world, Matrix view, Matrix projection)
+		{
+			foreach (ModelMesh mesh in _model.Meshes)
+				DrawMesh(mesh, opaque, world, view, projection);
+		}
+
+		private void DrawMesh(ModelMesh mesh, bool opaque, Matrix world, Matrix view, Matrix projection)
+		{
+			int count = mesh.MeshParts.Count;
+			for (int i = 0; i < count; i++)
+			{
+				ModelMeshPart part = mesh.MeshParts[i];
+				Effect effect = part.Effect;
+
+				BasicEffect basicEffect = effect as BasicEffect;
+				if (basicEffect != null)
+				{
+					if (basicEffect.Alpha < 1.0f && opaque)
+						continue;
+					if (basicEffect.Alpha == 1.0f && !opaque)
+						continue;
+
+					basicEffect.PreferPerPixelLighting = true;
+					basicEffect.SpecularPower = 16;
+				}
+
+				IEffectMatrices effectMatrices = effect as IEffectMatrices;
+				if (effectMatrices != null)
+				{
+					effectMatrices.World = _boneTransforms[mesh.ParentBone.Index] * world;
+					effectMatrices.View = view;
+					effectMatrices.Projection = projection;
+				}
+
+				IEffectLights effectLights = effect as IEffectLights;
+				if (effectLights != null)
+					effectLights.EnableDefaultLighting();
+
+				int passes = effect.CurrentTechnique.Passes.Count;
+				for (int j = 0; j < passes; j++)
+				{
+					effect.CurrentTechnique.Passes[j].Apply();
+					DrawMeshPart(part);
+				}
+			}
+		}
+
+		private static void DrawMeshPart(ModelMeshPart meshPart)
+		{
+			if (meshPart.NumVertices > 0)
+			{
+				GraphicsDevice graphicsDevice = meshPart.VertexBuffer.GraphicsDevice;
+				graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer, meshPart.VertexOffset);
+				graphicsDevice.Indices = meshPart.IndexBuffer;
+				graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshPart.NumVertices,
+					meshPart.StartIndex, meshPart.PrimitiveCount);
 			}
 		}
 
@@ -136,6 +189,11 @@ namespace XBuilder.ContentPreview.Rendering
 		public override void ShowNormals(bool show)
 		{
 			_normalsRenderer.Active = show;
+		}
+
+		public override void ToggleAlphaBlend(bool show)
+		{
+			_alphaBlend = show;
 		}
 
 		/// <summary>

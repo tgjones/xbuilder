@@ -151,6 +151,11 @@ namespace XBuilder.ContentPreview
 			graphicsDeviceControl.ShowNormals(show);
 		}
 
+		public void ToggleAlphaBlend(bool show)
+		{
+			graphicsDeviceControl.ToggleAlphaBlend(show);
+		}
+
 		protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
 		{
 			graphicsDeviceControl.RaiseMouseWheel(e);
