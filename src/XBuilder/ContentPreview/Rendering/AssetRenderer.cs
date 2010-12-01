@@ -12,7 +12,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 		public abstract void Draw(GraphicsDevice graphicsDevice);
 
-		public virtual void ChangeFillMode(bool wireframe)
+		public virtual void ChangeFillMode(ShadingMode wireframe)
 		{
 			
 		}

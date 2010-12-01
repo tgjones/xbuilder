@@ -23,7 +23,7 @@ namespace XBuilder.ContentPreview
     	private OleMenuCommand _normals;
 		private OleMenuCommand _alphaBlend;
 
-    	private bool _wireframe;
+		private ShadingMode _shadingMode;
 
         /// <summary>
         /// Standard constructor for the tool window.
@@ -59,6 +59,7 @@ namespace XBuilder.ContentPreview
 			{
 				_fillModeSolid = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolid, ChangeFillModeSolid);
 				_fillModeWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeWireframe, ChangeFillModeWireframe);
+				AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolidAndWireframe, ChangeFillModeSolidAndWireframe);
 				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
 				_alphaBlend = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarAlphaBlend, ToggleAlphaBlend);
 			}
@@ -78,13 +79,19 @@ namespace XBuilder.ContentPreview
 
 		private void ChangeFillModeSolid(object sender, EventArgs e)
 		{
-			_wireframe = false;
+			_shadingMode = ShadingMode.Solid;
 			ChangeFillMode();
 		}
 
 		private void ChangeFillModeWireframe(object sender, EventArgs e)
 		{
-			_wireframe = true;
+			_shadingMode = ShadingMode.Wireframe;
+			ChangeFillMode();
+		}
+
+		private void ChangeFillModeSolidAndWireframe(object sender, EventArgs e)
+		{
+			_shadingMode = ShadingMode.SolidAndWireframe;
 			ChangeFillMode();
 		}
 
@@ -113,7 +120,7 @@ namespace XBuilder.ContentPreview
 
     	private void ChangeFillMode()
     	{
-			((ContentPreviewToolWindowControl)base.Content).ChangeFillMode(_wireframe);
+			((ContentPreviewToolWindowControl)base.Content).ChangeFillMode(_shadingMode);
     	}
 
 		private void ShowNormals()
@@ -126,4 +133,11 @@ namespace XBuilder.ContentPreview
 			((ContentPreviewToolWindowControl)base.Content).ToggleAlphaBlend(_alphaBlend.Checked);
 		}
     }
+
+	public enum ShadingMode
+	{
+		Solid,
+		Wireframe,
+		SolidAndWireframe
+	}
 }

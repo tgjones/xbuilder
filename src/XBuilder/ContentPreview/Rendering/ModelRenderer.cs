@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XBuilder.Options;
+using XBuilder.Util;
 
 namespace XBuilder.ContentPreview.Rendering
 {
@@ -12,6 +14,7 @@ namespace XBuilder.ContentPreview.Rendering
 	/// </summary>
 	public class ModelRenderer : AssetRenderer
 	{
+		private readonly GraphicsDeviceControl _parentControl;
 		public event EventHandler<ModelChangedEventArgs> ModelChanged;
 
 		protected void OnModelChanged(ModelChangedEventArgs e)
@@ -19,6 +22,9 @@ namespace XBuilder.ContentPreview.Rendering
 			EventHandler<ModelChangedEventArgs> handler = ModelChanged;
 			if (handler != null) handler(this, e);
 		}
+
+		private IOptionsService _optionsService;
+		private XBuilderOptionsContentPreview _options;
 
 		// Cache information about the model size and position.
 		private Matrix[] _boneTransforms;
@@ -33,7 +39,7 @@ namespace XBuilder.ContentPreview.Rendering
 		private NormalsRenderer _normalsRenderer;
 
 		private Model _model;
-		private bool _wireframe;
+		private ShadingMode _shadingMode;
 		private bool _alphaBlend;
 
 		/// <summary>
@@ -57,6 +63,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 		public ModelRenderer(GraphicsDeviceControl parentControl)
 		{
+			_parentControl = parentControl;
 			_ballController = new CameraController();
 
 			parentControl.MouseWheelWpf += (sender, e) =>
@@ -75,8 +82,21 @@ namespace XBuilder.ContentPreview.Rendering
 
 		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)
 		{
+			_optionsService = (IOptionsService) serviceProvider.GetService(typeof (IOptionsService));
+			_optionsService.OptionsChanged += (sender, e) =>
+			{
+				SetOptions();
+				_parentControl.Invalidate();
+			};
+			SetOptions();
+
 			foreach (ModelRendererWidget widget in _widgets)
 				widget.Initialize(serviceProvider, graphicsDevice);
+		}
+
+		private void SetOptions()
+		{
+			_options = _optionsService.GetContentPreviewOptions();
 		}
 
 		/// <summary>
@@ -99,21 +119,35 @@ namespace XBuilder.ContentPreview.Rendering
 				foreach (ModelRendererWidget widget in _widgets.Where(w => w.RenderPosition == WidgetRenderPosition.BeforeModel))
 					widget.Draw(graphicsDevice, _ballController.CurrentOrientation, view, projection);
 
-				graphicsDevice.RasterizerState = new RasterizerState
-				{
-					FillMode = (_wireframe) ? FillMode.WireFrame : FillMode.Solid
-				};
-
 				graphicsDevice.BlendState = _alphaBlend ? BlendState.AlphaBlend : BlendState.Opaque;
 
+				graphicsDevice.RasterizerState = new RasterizerState
+				{
+					FillMode = (_shadingMode == ShadingMode.Wireframe) ? FillMode.WireFrame : FillMode.Solid
+				};
+
 				// Draw the model.
-				DrawModel(true, world, view, projection);
+				DrawModel(graphicsDevice, view, projection, world, null);
 
-				foreach (ModelMesh mesh in _model.Meshes)
-					foreach (ModelRendererWidget widget in _widgets)
-						widget.OnEndDrawMesh(graphicsDevice, mesh, _boneTransforms[mesh.ParentBone.Index], view, projection);
+				if (_shadingMode == ShadingMode.SolidAndWireframe)
+				{
+					graphicsDevice.RasterizerState = new RasterizerState
+					{
+						FillMode = FillMode.WireFrame,
+						DepthBias = _options.SolidAndWireframeDepthBias
+					};
 
-				DrawModel(false, world, view, projection);
+					// Draw the model with a fixed colour.
+					graphicsDevice.BlendState = BlendState.AlphaBlend;
+					DrawModel(graphicsDevice, view, projection, world,
+						ConvertUtility.ToXnaColor(_options.SolidAndWireframeColor).ToVector3());
+
+					graphicsDevice.RasterizerState = new RasterizerState
+					{
+						FillMode = FillMode.Solid,
+						DepthBias = 0.0f
+					};
+				}
 
 				graphicsDevice.BlendState = BlendState.Opaque;
 
@@ -122,13 +156,24 @@ namespace XBuilder.ContentPreview.Rendering
 			}
 		}
 
-		private void DrawModel(bool opaque, Matrix world, Matrix view, Matrix projection)
+		private void DrawModel(GraphicsDevice graphicsDevice, Matrix view, Matrix projection, Matrix world, Vector3? color)
 		{
+			DrawModel(true, world, view, projection, color);
+
 			foreach (ModelMesh mesh in _model.Meshes)
-				DrawMesh(mesh, opaque, world, view, projection);
+				foreach (ModelRendererWidget widget in _widgets)
+					widget.OnEndDrawMesh(graphicsDevice, mesh, _boneTransforms[mesh.ParentBone.Index], view, projection);
+
+			DrawModel(false, world, view, projection, color);
 		}
 
-		private void DrawMesh(ModelMesh mesh, bool opaque, Matrix world, Matrix view, Matrix projection)
+		private void DrawModel(bool opaque, Matrix world, Matrix view, Matrix projection, Vector3? color)
+		{
+			foreach (ModelMesh mesh in _model.Meshes)
+				DrawMesh(mesh, opaque, world, view, projection, color);
+		}
+
+		private void DrawMesh(ModelMesh mesh, bool opaque, Matrix world, Matrix view, Matrix projection, Vector3? color)
 		{
 			int count = mesh.MeshParts.Count;
 			for (int i = 0; i < count; i++)
@@ -136,6 +181,8 @@ namespace XBuilder.ContentPreview.Rendering
 				ModelMeshPart part = mesh.MeshParts[i];
 				Effect effect = part.Effect;
 
+				bool textureEnabled = false, lightingEnabled = false, vertexColorEnabled = false;
+				float alpha = 1.0f;
 				BasicEffect basicEffect = effect as BasicEffect;
 				if (basicEffect != null)
 				{
@@ -146,6 +193,25 @@ namespace XBuilder.ContentPreview.Rendering
 
 					basicEffect.PreferPerPixelLighting = true;
 					basicEffect.SpecularPower = 16;
+
+					if (color != null)
+					{
+						basicEffect.DiffuseColor = color.Value;
+
+						textureEnabled = basicEffect.TextureEnabled;
+						lightingEnabled = basicEffect.LightingEnabled;
+						vertexColorEnabled = basicEffect.VertexColorEnabled;
+						alpha = basicEffect.Alpha;
+
+						basicEffect.TextureEnabled = false;
+						basicEffect.LightingEnabled = false;
+						basicEffect.VertexColorEnabled = false;
+						basicEffect.Alpha = _options.SolidAndWireframeAlpha;
+					}
+					else
+					{
+						basicEffect.DiffuseColor = Vector3.One;
+					}
 				}
 
 				IEffectMatrices effectMatrices = effect as IEffectMatrices;
@@ -166,6 +232,14 @@ namespace XBuilder.ContentPreview.Rendering
 					effect.CurrentTechnique.Passes[j].Apply();
 					DrawMeshPart(part);
 				}
+
+				if (basicEffect != null && color != null)
+				{
+					basicEffect.Alpha = alpha;
+					basicEffect.TextureEnabled = textureEnabled;
+					basicEffect.LightingEnabled = lightingEnabled;
+					basicEffect.VertexColorEnabled = vertexColorEnabled;
+				}
 			}
 		}
 
@@ -181,9 +255,9 @@ namespace XBuilder.ContentPreview.Rendering
 			}
 		}
 
-		public override void ChangeFillMode(bool wireframe)
+		public override void ChangeFillMode(ShadingMode shadingMode)
 		{
-			_wireframe = wireframe;
+			_shadingMode = shadingMode;
 		}
 
 		public override void ShowNormals(bool show)

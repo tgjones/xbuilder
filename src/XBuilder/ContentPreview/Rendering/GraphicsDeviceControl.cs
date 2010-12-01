@@ -263,7 +263,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 		#endregion
 
-		public void ChangeFillMode(bool wireframe)
+		public void ChangeFillMode(ShadingMode wireframe)
 		{
 			if (AssetRenderer != null)
 				AssetRenderer.ChangeFillMode(wireframe);

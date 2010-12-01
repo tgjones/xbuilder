@@ -74,6 +74,45 @@ namespace XBuilder.Options
 			}
 		}
 
+		private float _solidAndWireframeAlpha;
+
+		[Category("Solid + Wireframe"),
+		DisplayName("Wireframe Transparency"),
+		Description("Specify transparency for the wireframe part of the Solid + Wireframe shading mode. 0 is totally transparent, 1 is totally opaque."),
+		DefaultValue(0.5f)]
+		public float SolidAndWireframeAlpha
+		{
+			get { return _solidAndWireframeAlpha; }
+			set
+			{
+				if (value <= 0.0f || value > 1.0f)
+					throw new ArgumentException("Transparency must be greater than 0 and less than or equal to 1.", "value");
+				_solidAndWireframeAlpha = value;
+			}
+		}
+
+		[Category("Solid + Wireframe"),
+		DisplayName("Wireframe Color"),
+		DefaultValue(typeof(Color), "Yellow")]
+		public Color SolidAndWireframeColor { get; set; }
+
+		private float _solidAndWireframeDepthBias;
+
+		[Category("Solid + Wireframe"),
+		DisplayName("Depth Bias"),
+		Description("Specify depth bias for the wireframe part of the Solid + Wireframe shading mode. You might need to adjust this, depending on the size of your models, and the distance from the camera to the model. It will usually be a very small number. It must be negative, otherwise the wireframe would be behind the solid part."),
+		DefaultValue(-0.00001f)]
+		public float SolidAndWireframeDepthBias
+		{
+			get { return _solidAndWireframeDepthBias; }
+			set
+			{
+				if (value >= 0.0f)
+					throw new ArgumentException("Depth bias must be less than 0.", "value");
+				_solidAndWireframeDepthBias = value;
+			}
+		}
+
 		public XBuilderOptionsContentPreview()
 		{
 			GridSize = 101;
@@ -84,6 +123,9 @@ namespace XBuilder.Options
 			GridLineAxisColor = Color.CornflowerBlue;
 			ShowGrid = true;
 			NormalLengthPercentage = 0.05f;
+			SolidAndWireframeAlpha = 0.5f;
+			SolidAndWireframeColor = Color.Yellow;
+			SolidAndWireframeDepthBias = -0.00001f;
 		}
 
 		protected override void OnApply(PageApplyEventArgs e)

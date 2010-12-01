@@ -141,7 +141,7 @@ namespace XBuilder.ContentPreview
 			get { return graphicsDeviceControl.AssetRenderer != null && graphicsDeviceControl.AssetRenderer is ModelRenderer; }
     	}
 
-    	public void ChangeFillMode(bool wireframe)
+    	public void ChangeFillMode(ShadingMode wireframe)
     	{
     		graphicsDeviceControl.ChangeFillMode(wireframe);
     	}

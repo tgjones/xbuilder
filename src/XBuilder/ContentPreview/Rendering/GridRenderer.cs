@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XBuilder.Options;
+using XBuilder.Util;
 
 namespace XBuilder.ContentPreview.Rendering
 {
@@ -41,19 +42,14 @@ namespace XBuilder.ContentPreview.Rendering
 			RecreateGrid(graphicsDevice, optionsService);
 		}
 
-		private static Color ToXnaColor(System.Drawing.Color c)
-		{
-			return new Color(c.R, c.G, c.B);
-		}
-
 		private void RecreateGrid(GraphicsDevice graphicsDevice, IOptionsService optionsService)
 		{
 			_options = optionsService.GetContentPreviewOptions();
 			_spacing = _options.GridSpacing;
 			_majorLines = _options.MajorLinesEveryNthGridLine;
-			_minorColor = ToXnaColor(_options.GridLineMinorColor);
-			_majorColor = ToXnaColor(_options.GridLineMajorColor);
-			_axisColor = ToXnaColor(_options.GridLineAxisColor);
+			_minorColor = ConvertUtility.ToXnaColor(_options.GridLineMinorColor);
+			_majorColor = ConvertUtility.ToXnaColor(_options.GridLineMajorColor);
+			_axisColor = ConvertUtility.ToXnaColor(_options.GridLineAxisColor);
 
 			int size = _options.GridSize;
 
