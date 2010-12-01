@@ -12,6 +12,14 @@ namespace XBuilder.ContentPreview.Rendering
 	/// </summary>
 	public class ModelRenderer : AssetRenderer
 	{
+		public event EventHandler<ModelChangedEventArgs> ModelChanged;
+
+		protected void OnModelChanged(ModelChangedEventArgs e)
+		{
+			EventHandler<ModelChangedEventArgs> handler = ModelChanged;
+			if (handler != null) handler(this, e);
+		}
+
 		// Cache information about the model size and position.
 		private Matrix[] _boneTransforms;
 		private Vector3 _modelCenter;
@@ -21,6 +29,8 @@ namespace XBuilder.ContentPreview.Rendering
 
 		private readonly CameraController _ballController;
 		private ModelRendererWidget[] _widgets;
+
+		private NormalsRenderer _normalsRenderer;
 
 		private Model _model;
 		private bool _wireframe;
@@ -38,6 +48,7 @@ namespace XBuilder.ContentPreview.Rendering
 				if (_model != null)
 					MeasureModel();
 				_ballController.ResetOrientation();
+				OnModelChanged(new ModelChangedEventArgs(_model));
 			}
 		}
 
@@ -53,9 +64,12 @@ namespace XBuilder.ContentPreview.Rendering
 				parentControl.Invalidate();
 			};
 
-			_widgets = new ModelRendererWidget[2];
+			_widgets = new ModelRendererWidget[3];
 			_widgets[0] = new GridRenderer(parentControl);
 			_widgets[1] = new CubeRenderer(parentControl, _ballController);
+
+			_normalsRenderer = new NormalsRenderer(parentControl, this);
+			_widgets[2] = _normalsRenderer;
 		}
 
 		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)
@@ -104,6 +118,9 @@ namespace XBuilder.ContentPreview.Rendering
 					}
 
 					mesh.Draw();
+
+					foreach (ModelRendererWidget widget in _widgets)
+						widget.OnEndDrawMesh(graphicsDevice, mesh, _boneTransforms[mesh.ParentBone.Index], view, projection);
 				}
 
 				foreach (ModelRendererWidget widget in _widgets.Where(w => w.RenderPosition == WidgetRenderPosition.AfterModel))
@@ -114,6 +131,11 @@ namespace XBuilder.ContentPreview.Rendering
 		public override void ChangeFillMode(bool wireframe)
 		{
 			_wireframe = wireframe;
+		}
+
+		public override void ShowNormals(bool show)
+		{
+			_normalsRenderer.Active = show;
 		}
 
 		/// <summary>

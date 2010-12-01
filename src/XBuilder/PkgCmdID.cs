@@ -13,5 +13,7 @@
 
 		public const int cmdidContentPreviewToolbarFillModeSolid = 0x1072;
 		public const int cmdidContentPreviewToolbarFillModeWireframe = 0x1073;
+
+		public const int cmdidContentPreviewToolbarNormals = 0x1074;
 	}
 }

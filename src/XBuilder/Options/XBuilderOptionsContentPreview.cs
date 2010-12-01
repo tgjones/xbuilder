@@ -25,7 +25,7 @@ namespace XBuilder.Options
 			set
 			{
 				if (value <= 1 || value%2 == 0)
-					throw new ArgumentException("Size must be an odd-value number greater than 1.", "size");
+					throw new ArgumentException("Size must be an odd-value number greater than 1.", "value");
 				_gridSize = value;
 			}
 		}
@@ -57,6 +57,23 @@ namespace XBuilder.Options
 		DefaultValue(typeof(Color), "CornflowerBlue")]
 		public Color GridLineAxisColor { get; set; }
 
+		private float _normalLengthPercentage;
+
+		[Category("Normals"),
+		DisplayName("Normal Length"),
+		Description("Specify normal length as a percentage of the model radius, i.e. 0.1 would mean rendered normal length = model radius / 10."),
+		DefaultValue(0.05f)]
+		public float NormalLengthPercentage
+		{
+			get { return _normalLengthPercentage; }
+			set
+			{
+				if (value <= 0.0f)
+					throw new ArgumentException("Percentage must be greater than 0.", "value");
+				_normalLengthPercentage = value;
+			}
+		}
+
 		public XBuilderOptionsContentPreview()
 		{
 			GridSize = 101;
@@ -66,6 +83,7 @@ namespace XBuilder.Options
 			GridLineMajorColor = Color.Black;
 			GridLineAxisColor = Color.CornflowerBlue;
 			ShowGrid = true;
+			NormalLengthPercentage = 0.05f;
 		}
 
 		protected override void OnApply(PageApplyEventArgs e)

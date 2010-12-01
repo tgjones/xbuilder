@@ -97,7 +97,6 @@ namespace XBuilder.ContentPreview
 					// load the temporary .xnb file that we just created.
 					assetHandler.LoadContent(assetName);
 
-					assetHandler.Renderer.Initialize(graphicsDeviceControl.Services, graphicsDeviceControl.GraphicsDevice);
 					graphicsDeviceControl.AssetRenderer = assetHandler.Renderer;
 				}
 
@@ -146,6 +145,11 @@ namespace XBuilder.ContentPreview
     	{
     		graphicsDeviceControl.ChangeFillMode(wireframe);
     	}
+
+		public void ShowNormals(bool show)
+		{
+			graphicsDeviceControl.ShowNormals(show);
+		}
 
 		protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
 		{

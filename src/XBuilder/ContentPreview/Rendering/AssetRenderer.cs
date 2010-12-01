@@ -16,5 +16,10 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 			
 		}
+
+		public virtual void ShowNormals(bool show)
+		{
+
+		}
 	}
 }

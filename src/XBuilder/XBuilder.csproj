@@ -133,7 +133,9 @@
     <Compile Include="ContentPreview\IContentPreviewService.cs" />
     <Compile Include="ContentPreview\Rendering\CubeRenderer.cs" />
     <Compile Include="ContentPreview\Rendering\GridRenderer.cs" />
+    <Compile Include="ContentPreview\Rendering\ModelChangedEventArgs.cs" />
     <Compile Include="ContentPreview\Rendering\ModelRendererWidget.cs" />
+    <Compile Include="ContentPreview\Rendering\NormalsRenderer.cs" />
     <Compile Include="Options\IOptionsService.cs" />
     <Compile Include="Options\OptionsService.cs" />
     <Compile Include="Options\XBuilderOptionsContentPreview.cs">

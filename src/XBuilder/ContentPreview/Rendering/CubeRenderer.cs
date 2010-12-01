@@ -174,6 +174,7 @@ namespace XBuilder.ContentPreview.Rendering
 				graphicsDevice.Viewport.Width - _size,
 				0, _size, _size);
 
+			graphicsDevice.DepthStencilState = DepthStencilState.None;
 			graphicsDevice.BlendState = BlendState.AlphaBlend;
 			graphicsDevice.RasterizerState = new RasterizerState
 			{
@@ -204,6 +205,7 @@ namespace XBuilder.ContentPreview.Rendering
 			graphicsDevice.Viewport = savedViewport;
 
 			graphicsDevice.BlendState = BlendState.Opaque;
+			graphicsDevice.DepthStencilState = DepthStencilState.Default;
 		}
 	}
 }

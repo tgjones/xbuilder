@@ -20,6 +20,7 @@ namespace XBuilder.ContentPreview
     {
 		private OleMenuCommand _fillModeSolid;
 		private OleMenuCommand _fillModeWireframe;
+    	private OleMenuCommand _normals;
 
     	private bool _wireframe;
 
@@ -57,6 +58,7 @@ namespace XBuilder.ContentPreview
 			{
 				_fillModeSolid = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolid, ChangeFillModeSolid);
 				_fillModeWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeWireframe, ChangeFillModeWireframe);
+				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
 			}
 
 			((ContentPreviewToolWindowControl)base.Content).Initialize((XBuilderPackage) Package);
@@ -84,6 +86,12 @@ namespace XBuilder.ContentPreview
 			ChangeFillMode();
 		}
 
+		private void ToggleNormals(object sender, EventArgs e)
+		{
+			_normals.Checked = !_normals.Checked;
+			ShowNormals();
+		}
+
 		public void LoadFile(string fileName, IEnumerable<string> references)
 		{
 			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, references);
@@ -92,11 +100,17 @@ namespace XBuilder.ContentPreview
 			//_fillModeSolid.Enabled = _fillModeWireframe.Enabled = isModelLoaded;
 
 			ChangeFillMode();
+			ShowNormals();
 		}
 
     	private void ChangeFillMode()
     	{
 			((ContentPreviewToolWindowControl)base.Content).ChangeFillMode(_wireframe);
     	}
+
+		private void ShowNormals()
+		{
+			((ContentPreviewToolWindowControl)base.Content).ShowNormals(_normals.Checked);
+		}
     }
 }

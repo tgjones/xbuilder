@@ -81,6 +81,14 @@
 				</Strings>
 			</Button>
 
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarNormals" priority="0x0103" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarNormals</CommandName>
+					<ButtonText>Normals</ButtonText>
+				</Strings>
+			</Button>
+
 			<Button guid="guidModelViewerCmdSet" id="cmdidModelViewer" priority="0x0100" type="Button">
 				<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
 				<Icon guid="guidImages" id="bmpContentPreview" />
@@ -129,6 +137,7 @@
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeMenuGroup" value="0x1071" />
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeSolid" value="0x1072" />
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeWireframe" value="0x1073" />
+			<IDSymbol name="cmdidContentPreviewToolbarNormals" value="0x1074" />
 		</GuidSymbol>
 
 		<GuidSymbol name="guidImages" value="{72f94ffa-50c5-4b0b-9c4e-6feb83c65e97}" >

@@ -270,6 +270,13 @@ namespace XBuilder.ContentPreview.Rendering
 			Invalidate();
 		}
 
+		public void ShowNormals(bool show)
+		{
+			if (AssetRenderer != null)
+				AssetRenderer.ShowNormals(show);
+			Invalidate();
+		}
+
 		public event MouseWheelEventHandler MouseWheelWpf;
 
 		public void RaiseMouseWheel(MouseWheelEventArgs mouseWheelEventArgs)
