@@ -136,6 +136,11 @@
 		</Bitmaps>
 	</Commands>
 
+	<KeyBindings>
+		<KeyBinding guid="guidModelViewerCmdSet" id="cmdidSolutionContextMenuPreviewContent" editor="guidVSStd97"
+					key1="VK_F10" mod1="Control Shift Alt" />
+	</KeyBindings>
+
 	<Symbols>
 		<!-- This is the package guid. -->
 		<GuidSymbol name="guidModelViewerPkg" value="{22f79c21-2040-4b57-af48-7ad329431082}" />

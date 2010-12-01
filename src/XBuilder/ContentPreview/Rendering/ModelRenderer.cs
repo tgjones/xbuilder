@@ -181,6 +181,7 @@ namespace XBuilder.ContentPreview.Rendering
 				ModelMeshPart part = mesh.MeshParts[i];
 				Effect effect = part.Effect;
 
+				Vector3 diffuseColor = Vector3.One;
 				bool textureEnabled = false, lightingEnabled = false, vertexColorEnabled = false;
 				float alpha = 1.0f;
 				BasicEffect basicEffect = effect as BasicEffect;
@@ -196,21 +197,17 @@ namespace XBuilder.ContentPreview.Rendering
 
 					if (color != null)
 					{
-						basicEffect.DiffuseColor = color.Value;
-
+						diffuseColor = basicEffect.DiffuseColor;
 						textureEnabled = basicEffect.TextureEnabled;
 						lightingEnabled = basicEffect.LightingEnabled;
 						vertexColorEnabled = basicEffect.VertexColorEnabled;
 						alpha = basicEffect.Alpha;
 
+						basicEffect.DiffuseColor = color.Value;
 						basicEffect.TextureEnabled = false;
 						basicEffect.LightingEnabled = false;
 						basicEffect.VertexColorEnabled = false;
 						basicEffect.Alpha = _options.SolidAndWireframeAlpha;
-					}
-					else
-					{
-						basicEffect.DiffuseColor = Vector3.One;
 					}
 				}
 
@@ -235,6 +232,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 				if (basicEffect != null && color != null)
 				{
+					basicEffect.DiffuseColor = diffuseColor;
 					basicEffect.Alpha = alpha;
 					basicEffect.TextureEnabled = textureEnabled;
 					basicEffect.LightingEnabled = lightingEnabled;
