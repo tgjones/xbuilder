@@ -17,6 +17,11 @@ namespace XBuilder.ContentPreview.Rendering
 			
 		}
 
+		public virtual void ChangePrimitive(Primitive primitive)
+		{
+
+		}
+
 		public virtual void ShowNormals(bool show)
 		{
 

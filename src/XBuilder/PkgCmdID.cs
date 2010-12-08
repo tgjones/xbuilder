@@ -18,5 +18,14 @@
 		public const int cmdidContentPreviewToolbarNormals = 0x1080;
 		public const int cmdidContentPreviewToolbarBoundingBox = 0x1081;
 		public const int cmdidContentPreviewToolbarAlphaBlend = 0x1082;
+
+		public const int cmdidContentPreviewToolbarPrimitiveMenuController = 0x1090;
+		public const int cmdidContentPreviewToolbarPrimitiveMenuGroup = 0x1091;
+		public const int cmdidContentPreviewToolbarPrimitiveSphere = 0x1092;
+		public const int cmdidContentPreviewToolbarPrimitiveCube = 0x1093;
+		public const int cmdidContentPreviewToolbarPrimitiveCylinder = 0x1094;
+		public const int cmdidContentPreviewToolbarPrimitiveTorus = 0x1095;
+		public const int cmdidContentPreviewToolbarPrimitivePlane = 0x1096;
+		public const int cmdidContentPreviewToolbarPrimitiveTeapot = 0x1097;
 	}
 }

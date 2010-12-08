@@ -32,9 +32,14 @@ namespace XBuilder.Xna
 			_textureHandler.Renderer.Initialize(_graphicsDeviceControl.Services, _graphicsDeviceControl.GraphicsDevice);
 		}
 
+		public AssetType GetAssetType(string fileName)
+		{
+			return FileExtensionUtility.GetAssetType(_optionsService, fileName);
+		}
+
 		public AssetHandler GetAssetHandler(string fileName)
 		{
-			AssetType assetType = FileExtensionUtility.GetAssetType(_optionsService, fileName);
+			AssetType assetType = GetAssetType(fileName);
 			switch (assetType)
 			{
 				case AssetType.Effect :

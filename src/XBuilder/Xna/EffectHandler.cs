@@ -7,7 +7,7 @@ namespace XBuilder.Xna
 {
 	public class EffectHandler : AssetHandler
 	{
-		private readonly ModelRenderer _modelRenderer;
+		private readonly EffectRenderer _modelRenderer;
 		private IServiceProvider _serviceProvider;
 
 		public override AssetRenderer Renderer
@@ -23,7 +23,7 @@ namespace XBuilder.Xna
 		public EffectHandler(ContentManager contentManager, GraphicsDeviceControl graphicsDeviceControl)
 			: base(contentManager, graphicsDeviceControl)
 		{
-			_modelRenderer = new ModelRenderer(graphicsDeviceControl);
+			_modelRenderer = new EffectRenderer(graphicsDeviceControl);
 		}
 
 		public override void ResetRenderer()
@@ -33,16 +33,7 @@ namespace XBuilder.Xna
 
 		public override void LoadContent(string assetName)
 		{
-			Effect effect = ContentManager.Load<Effect>(assetName);
-
-			// Load sphere and apply effect to sphere.
-			ResourceContentManager resourceContentManager = new ResourceContentManager(_serviceProvider, Resources.ResourceManager);
-			Model primitive = resourceContentManager.Load<Model>("Sphere");
-			foreach (ModelMesh mesh in primitive.Meshes)
-				foreach (ModelMeshPart meshPart in mesh.MeshParts)
-					meshPart.Effect = effect;
-
-			_modelRenderer.Model = primitive;
+			_modelRenderer.Effect = ContentManager.Load<Effect>(assetName);
 		}
 
 		public void Initialize(IServiceProvider serviceProvider, XBuilderPackage package)

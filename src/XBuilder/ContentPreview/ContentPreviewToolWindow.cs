@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using XBuilder.Vsx;
+using XBuilder.Xna;
 
 namespace XBuilder.ContentPreview
 {
@@ -19,15 +20,23 @@ namespace XBuilder.ContentPreview
     [Guid("f358ad4b-049b-4aa3-9646-f13e5e5722f9")]
     public class ContentPreviewToolWindow : ToolWindowPane
     {
-		private OleMenuCommand _fillModeSolid;
-		private OleMenuCommand _fillModeWireframe;
     	private OleMenuCommand _normals;
 		private OleMenuCommand _boundingBox;
 		private OleMenuCommand _alphaBlend;
 
 		private ShadingMode _shadingMode;
+		private Primitive _primitive;
+    	private OleMenuCommand _fillModeSolid;
+    	private OleMenuCommand _fillModeWireframe;
+    	private OleMenuCommand _fillModeSolidAndWireframe;
+    	private OleMenuCommand _primitiveSphere;
+    	private OleMenuCommand _primitiveCube;
+    	private OleMenuCommand _primitiveCylinder;
+    	private OleMenuCommand _primitiveTorus;
+    	private OleMenuCommand _primitivePlane;
+    	private OleMenuCommand _primitiveTeapot;
 
-        /// <summary>
+    	/// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
         public ContentPreviewToolWindow() :
@@ -61,10 +70,31 @@ namespace XBuilder.ContentPreview
 			{
 				_fillModeSolid = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolid, ChangeFillModeSolid);
 				_fillModeWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeWireframe, ChangeFillModeWireframe);
-				AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolidAndWireframe, ChangeFillModeSolidAndWireframe);
+				_fillModeSolidAndWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolidAndWireframe, ChangeFillModeSolidAndWireframe);
+
 				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
 				_boundingBox = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarBoundingBox, ToggleBoundingBox);
 				_alphaBlend = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarAlphaBlend, ToggleAlphaBlend);
+
+				_primitiveSphere = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveSphere, ChangePrimitiveSphere);
+				_primitiveCube = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveCube, ChangePrimitiveCube);
+				_primitiveCylinder = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveCylinder, ChangePrimitiveCylinder);
+				_primitiveTorus = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveTorus, ChangePrimitiveTorus);
+				_primitivePlane = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitivePlane, ChangePrimitivePlane);
+				_primitiveTeapot = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveTeapot, ChangePrimitiveTeapot);
+
+				_fillModeSolid.Enabled = false;
+				_fillModeWireframe.Enabled = false;
+				_fillModeSolidAndWireframe.Enabled = false;
+				_normals.Enabled = false;
+				_alphaBlend.Enabled = false;
+				_boundingBox.Enabled = false;
+				_primitiveSphere.Enabled = false;
+				_primitiveCube.Enabled = false;
+				_primitiveCylinder.Enabled = false;
+				_primitiveTorus.Enabled = false;
+				_primitivePlane.Enabled = false;
+				_primitiveTeapot.Enabled = false;
 			}
 
 			((ContentPreviewToolWindowControl)base.Content).Initialize((XBuilderPackage) Package);
@@ -98,6 +128,42 @@ namespace XBuilder.ContentPreview
 			ChangeFillMode();
 		}
 
+		private void ChangePrimitiveSphere(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Sphere;
+			ChangePrimitive();
+		}
+
+		private void ChangePrimitiveCube(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Cube;
+			ChangePrimitive();
+		}
+
+		private void ChangePrimitiveCylinder(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Cylinder;
+			ChangePrimitive();
+		}
+
+		private void ChangePrimitiveTorus(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Torus;
+			ChangePrimitive();
+		}
+
+		private void ChangePrimitivePlane(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Plane;
+			ChangePrimitive();
+		}
+
+		private void ChangePrimitiveTeapot(object sender, EventArgs e)
+		{
+			_primitive = Primitive.Teapot;
+			ChangePrimitive();
+		}
+
 		private void ToggleNormals(object sender, EventArgs e)
 		{
 			_normals.Checked = !_normals.Checked;
@@ -118,19 +184,65 @@ namespace XBuilder.ContentPreview
 
 		public void LoadFile(string fileName, XnaBuildProperties buildProperties)
 		{
-			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, buildProperties);
+			_fillModeSolid.Enabled = true;
+			_fillModeWireframe.Enabled = true;
+			_fillModeSolidAndWireframe.Enabled = true;
+			_normals.Enabled = true;
+			_alphaBlend.Enabled = true;
+			_boundingBox.Enabled = true;
+			_primitiveSphere.Enabled = true;
+			_primitiveCube.Enabled = true;
+			_primitiveCylinder.Enabled = true;
+			_primitiveTorus.Enabled = true;
+			_primitivePlane.Enabled = true;
+			_primitiveTeapot.Enabled = true;
+
+			AssetType assetType = ((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, buildProperties);
+
+			switch (assetType)
+			{
+				case AssetType.Model:
+					_primitiveSphere.Enabled = false;
+					_primitiveCube.Enabled = false;
+					_primitiveCylinder.Enabled = false;
+					_primitiveTorus.Enabled = false;
+					_primitivePlane.Enabled = false;
+					_primitiveTeapot.Enabled = false;
+					break;
+				case AssetType.Texture:
+					_fillModeSolid.Enabled = false;
+					_fillModeWireframe.Enabled = false;
+					_fillModeSolidAndWireframe.Enabled = false;
+					_normals.Enabled = false;
+					_alphaBlend.Enabled = false;
+					_boundingBox.Enabled = false;
+					_primitiveSphere.Enabled = false;
+					_primitiveCube.Enabled = false;
+					_primitiveCylinder.Enabled = false;
+					_primitiveTorus.Enabled = false;
+					_primitivePlane.Enabled = false;
+					_primitiveTeapot.Enabled = false;
+					break;
+			}
 
 			//bool isModelLoaded = ((ContentPreviewToolWindowControl) base.Content).IsModelLoaded;
 			//_fillModeSolid.Enabled = _fillModeWireframe.Enabled = isModelLoaded;
 
 			ChangeFillMode();
+			ChangePrimitive();
 			ShowNormals();
+			ShowBoundingBox();
 		}
 
     	private void ChangeFillMode()
     	{
 			((ContentPreviewToolWindowControl)base.Content).ChangeFillMode(_shadingMode);
     	}
+
+		private void ChangePrimitive()
+		{
+			((ContentPreviewToolWindowControl)base.Content).ChangePrimitive(_primitive);
+		}
 
 		private void ShowNormals()
 		{
@@ -153,5 +265,15 @@ namespace XBuilder.ContentPreview
 		Solid,
 		Wireframe,
 		SolidAndWireframe
+	}
+
+	public enum Primitive
+	{
+		Sphere,
+		Cube,
+		Cylinder,
+		Torus,
+		Plane,
+		Teapot
 	}
 }

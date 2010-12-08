@@ -40,6 +40,18 @@
 					<CommandName>Test Toolbar2</CommandName>
 				</Strings>
 			</Menu>
+
+			<Menu guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuController" type="MenuControllerLatched" priority="0x106">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
+				<CommandFlag>DefaultDocked</CommandFlag>
+				<CommandFlag>IconAndText</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
+				<CommandFlag>TextIsAnchorCommand</CommandFlag>
+				<Strings>
+					<ButtonText>Test Toolbar</ButtonText>
+					<CommandName>Test Toolbar2</CommandName>
+				</Strings>
+			</Menu>
 		</Menus>
 
 		<!-- In this section you can define new menu groups. A menu group is a container for 
@@ -57,6 +69,10 @@
 
 			<Group guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuGroup" priority="0x100">
 				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarFillModeMenuController"/>
+			</Group>
+
+			<Group guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup" priority="0x105">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuController"/>
 			</Group>
 		</Groups>
 
@@ -110,6 +126,54 @@
 				<Strings>
 					<CommandName>cmdidContentPreviewToolbarAlphaBlend</CommandName>
 					<ButtonText>Alpha Blend</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveSphere" priority="0x0101" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitiveSphere</CommandName>
+					<ButtonText>Sphere</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveCube" priority="0x0102" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitiveCube</CommandName>
+					<ButtonText>Cube</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveCylinder" priority="0x0103" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitiveCylinder</CommandName>
+					<ButtonText>Cylinder</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveTorus" priority="0x0104" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitiveTorus</CommandName>
+					<ButtonText>Torus</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitivePlane" priority="0x0105" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitivePlane</CommandName>
+					<ButtonText>Plane</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveTeapot" priority="0x0106" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarPrimitiveTeapot</CommandName>
+					<ButtonText>Teapot</ButtonText>
 				</Strings>
 			</Button>
 
@@ -167,9 +231,19 @@
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeSolid" value="0x1072" />
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeWireframe" value="0x1073" />
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeSolidAndWireframe" value="0x1074" />
+			
 			<IDSymbol name="cmdidContentPreviewToolbarNormals" value="0x1080" />
 			<IDSymbol name="cmdidContentPreviewToolbarBoundingBox" value="0x1081" />
 			<IDSymbol name="cmdidContentPreviewToolbarAlphaBlend" value="0x1082" />
+			
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveMenuController" value="0x1090" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveMenuGroup" value="0x1091" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveSphere" value="0x1092" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveCube" value="0x1093" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveCylinder" value="0x1094" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveTorus" value="0x1095" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitivePlane" value="0x1096" />
+			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveTeapot" value="0x1097" />
 		</GuidSymbol>
 
 		<GuidSymbol name="guidImages" value="{72f94ffa-50c5-4b0b-9c4e-6feb83c65e97}" >

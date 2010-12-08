@@ -59,10 +59,10 @@ namespace XBuilder.ContentPreview
 		/// <summary>
 		/// Loads a new XNA asset file into the ModelViewerControl.
 		/// </summary>
-		public void LoadFile(string fileName, XnaBuildProperties buildProperties)
+		public AssetType LoadFile(string fileName, XnaBuildProperties buildProperties)
 		{
 			if (!_loaded)
-				return;
+				return AssetType.None;
 
 			// Unload any existing content.
 			graphicsDeviceControl.AssetRenderer = null;
@@ -123,6 +123,8 @@ namespace XBuilder.ContentPreview
 			}, ui);
 
 			loadTask.Start();
+
+			return _assetHandlers.GetAssetType(fileName);
 		}
 
     	public bool IsModelLoaded
@@ -134,6 +136,11 @@ namespace XBuilder.ContentPreview
     	{
     		graphicsDeviceControl.ChangeFillMode(wireframe);
     	}
+
+		public void ChangePrimitive(Primitive primitive)
+		{
+			graphicsDeviceControl.ChangePrimitive(primitive);
+		}
 
 		public void ShowNormals(bool show)
 		{

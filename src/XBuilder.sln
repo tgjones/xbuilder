@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XBuilder", "XBuilder\XBuild
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XBuilder.XnaContent", "XBuilder.XnaContent\XBuilder.XnaContent\XBuilder.XnaContent.csproj", "{DC260C9F-D0D4-4A78-89C1-7E6D3F86CADC}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "XBuilder.XnaContentContent", "XBuilder.XnaContent\XBuilder.XnaContentContent\XBuilder.XnaContentContent.contentproj", "{0ED1361A-DF88-4380-A86F-5FF1400148AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XBuilder.XnaContentContent", "XBuilder.XnaContent\XBuilder.XnaContentContent\XBuilder.XnaContentContent.contentproj", "{0ED1361A-DF88-4380-A86F-5FF1400148AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

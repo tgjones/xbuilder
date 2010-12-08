@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using XBuilder.Options;
 using XBuilder.Util;
@@ -42,6 +43,7 @@ namespace XBuilder.ContentPreview.Rendering
 		private Model _model;
 		private ShadingMode _shadingMode;
 		private bool _alphaBlend;
+		protected IServiceProvider _serviceProvider;
 
 		/// <summary>
 		/// Gets or sets the current model.
@@ -86,6 +88,7 @@ namespace XBuilder.ContentPreview.Rendering
 
 		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)
 		{
+			_serviceProvider = serviceProvider;
 			_optionsService = (IOptionsService) serviceProvider.GetService(typeof (IOptionsService));
 			_optionsService.OptionsChanged += (sender, e) =>
 			{

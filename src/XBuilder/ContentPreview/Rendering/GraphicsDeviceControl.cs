@@ -270,6 +270,13 @@ namespace XBuilder.ContentPreview.Rendering
 			Invalidate();
 		}
 
+		public void ChangePrimitive(Primitive primitive)
+		{
+			if (AssetRenderer != null)
+				AssetRenderer.ChangePrimitive(primitive);
+			Invalidate();
+		}
+
 		public void ShowNormals(bool show)
 		{
 			if (AssetRenderer != null)
