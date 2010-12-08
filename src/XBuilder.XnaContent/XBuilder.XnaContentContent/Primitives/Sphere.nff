@@ -1,0 +1,5 @@
+﻿# A material
+f 0.4 0.4 0.4 0.8 0.2 16 0
+
+# A sphere at 0 0 0 with a 'radius' of 100
+s 0 0 0 100

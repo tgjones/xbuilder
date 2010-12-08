@@ -121,8 +121,14 @@
     <value>Can not create tool window.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Cube" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Cube.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="CubeTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Xna\CubeTexture.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Cylinder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Cylinder.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="PipelineAddInInvalidPipeline" xml:space="preserve">
     <value>The content pipeline add-in store returned the following error:
@@ -135,7 +141,19 @@ The XNA Framework Content Pipeline properties will not be editable unless the pr
   <data name="PipelineAddInMissingVersionProperty" xml:space="preserve">
     <value>The content project does not contain an XnaFrameworkVersion property. The XNA Framework Content Pipeline properties will be disabled.</value>
   </data>
+  <data name="Plane" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Plane.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Sphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Sphere.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Teapot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Teapot.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="ToolWindowTitle" xml:space="preserve">
     <value>Content Preview</value>
+  </data>
+  <data name="Torus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Xna\Primitives\Torus.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

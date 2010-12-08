@@ -160,6 +160,7 @@
     <Compile Include="Xna\AssetHandlers.cs" />
     <Compile Include="Xna\Building\ContentPipelineManager.cs" />
     <Compile Include="Xna\Building\XnaConstants.cs" />
+    <Compile Include="Xna\EffectHandler.cs" />
     <Compile Include="Xna\ModelHandler.cs" />
     <Compile Include="ContentPreview\Rendering\AssetRenderer.cs" />
     <Compile Include="ContentPreview\Rendering\CameraController.cs" />
@@ -203,6 +204,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Xna\CubeTexture.xnb" />
+    <None Include="Resources\Xna\Primitives\Cube.xnb" />
+    <None Include="Resources\Xna\Primitives\Cylinder.xnb" />
+    <None Include="Resources\Xna\Primitives\Plane.xnb" />
+    <None Include="Resources\Xna\Primitives\Sphere.xnb" />
+    <None Include="Resources\Xna\Primitives\Teapot.xnb" />
+    <None Include="Resources\Xna\Primitives\Torus.xnb" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

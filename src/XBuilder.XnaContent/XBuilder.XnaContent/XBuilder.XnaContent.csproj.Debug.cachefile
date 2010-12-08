@@ -1,3 +1,8 @@
 Content\GridEffect.xnb
 Content\Primitives\Cube.xnb
+Content\Primitives\Cylinder.xnb
+Content\Primitives\Plane.xnb
+Content\Primitives\Sphere.xnb
+Content\Primitives\Teapot.xnb
+Content\Primitives\Torus.xnb
 Content\CubeTexture.xnb

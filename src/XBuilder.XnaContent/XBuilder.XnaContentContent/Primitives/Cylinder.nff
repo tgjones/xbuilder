@@ -1,0 +1,5 @@
+﻿# A material
+f 0.4 0.4 0.4 0.8 0.2 16 0
+
+# A cylinder at 0 0 0 with a 'radius' of 30 and 'height' of 150
+x-cylinder 0 0 0 30 150

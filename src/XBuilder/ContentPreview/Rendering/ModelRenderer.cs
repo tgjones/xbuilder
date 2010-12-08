@@ -222,6 +222,24 @@ namespace XBuilder.ContentPreview.Rendering
 					effectMatrices.View = view;
 					effectMatrices.Projection = projection;
 				}
+				else
+				{
+					EffectParameter wvp = effect.Parameters.GetParameterBySemantic("WORLDVIEWPROJECTION");
+					if (wvp != null)
+						wvp.SetValue(_boneTransforms[mesh.ParentBone.Index]*world*view*projection);
+
+					EffectParameter w = effect.Parameters.GetParameterBySemantic("WORLD");
+					if (w != null)
+						w.SetValue(_boneTransforms[mesh.ParentBone.Index] * world);
+
+					EffectParameter v = effect.Parameters.GetParameterBySemantic("VIEW");
+					if (v != null)
+						v.SetValue(view);
+
+					EffectParameter p = effect.Parameters.GetParameterBySemantic("PROJECTION");
+					if (p != null)
+						p.SetValue(projection);
+				}
 
 				IEffectLights effectLights = effect as IEffectLights;
 				if (effectLights != null)

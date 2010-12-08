@@ -69,9 +69,23 @@ namespace XBuilder {
             }
         }
         
+        internal static byte[] Cube {
+            get {
+                object obj = ResourceManager.GetObject("Cube", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static byte[] CubeTexture {
             get {
                 object obj = ResourceManager.GetObject("CubeTexture", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] Cylinder {
+            get {
+                object obj = ResourceManager.GetObject("Cylinder", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -105,12 +119,40 @@ namespace XBuilder {
             }
         }
         
+        internal static byte[] Plane {
+            get {
+                object obj = ResourceManager.GetObject("Plane", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] Sphere {
+            get {
+                object obj = ResourceManager.GetObject("Sphere", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] Teapot {
+            get {
+                object obj = ResourceManager.GetObject("Teapot", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Content Preview.
         /// </summary>
         internal static string ToolWindowTitle {
             get {
                 return ResourceManager.GetString("ToolWindowTitle", resourceCulture);
+            }
+        }
+        
+        internal static byte[] Torus {
+            get {
+                object obj = ResourceManager.GetObject("Torus", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

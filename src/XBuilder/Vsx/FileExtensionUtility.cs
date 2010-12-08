@@ -36,7 +36,12 @@ namespace XBuilder.Vsx
 					return AssetType.Texture;
 			}
 
-			// TODO: Support effects.
+			if (options.EffectExtensions != null)
+			{
+				string[] effectExtensions = options.EffectExtensions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				if (effectExtensions.Any(e => e.Trim() == extension))
+					return AssetType.Effect;
+			}
 
 			return AssetType.None;
 		}
