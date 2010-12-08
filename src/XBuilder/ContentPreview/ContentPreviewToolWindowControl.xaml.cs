@@ -113,7 +113,7 @@ namespace XBuilder.ContentPreview
 				{
 					// If the build failed, display an error message.
 					txtInfo.Text = "Uh-oh. Something went wrong. Check the Output window for details.";
-					AddToOutputWindow(buildError);
+					XBuilderWindowPane.WriteLine(buildError);
 				}
 				else
 				{
@@ -123,20 +123,6 @@ namespace XBuilder.ContentPreview
 			}, ui);
 
 			loadTask.Start();
-		}
-
-		private static void AddToOutputWindow(string message)
-		{
-			var outputWindow = (IVsOutputWindow) ServiceProvider.GlobalProvider.GetService(typeof(SVsOutputWindow));
-			Guid guidGeneralPane = VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
-
-			ErrorHandler.ThrowOnFailure(outputWindow.CreatePane(guidGeneralPane, "General", 1, 0));
-
-			IVsOutputWindowPane pane;
-			ErrorHandler.ThrowOnFailure(outputWindow.GetPane(guidGeneralPane, out pane));
-			pane.Activate();
-
-			pane.OutputString(message);
 		}
 
     	public bool IsModelLoaded
@@ -152,6 +138,11 @@ namespace XBuilder.ContentPreview
 		public void ShowNormals(bool show)
 		{
 			graphicsDeviceControl.ShowNormals(show);
+		}
+
+		public void ShowBoundingBox(bool show)
+		{
+			graphicsDeviceControl.ShowBoundingBox(show);
 		}
 
 		public void ToggleAlphaBlend(bool show)

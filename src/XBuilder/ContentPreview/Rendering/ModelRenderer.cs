@@ -34,9 +34,10 @@ namespace XBuilder.ContentPreview.Rendering
 		private float _modelRadius;
 
 		private readonly CameraController _ballController;
-		private ModelRendererWidget[] _widgets;
+		private readonly ModelRendererWidget[] _widgets;
 
-		private NormalsRenderer _normalsRenderer;
+		private readonly NormalsRenderer _normalsRenderer;
+		private readonly BoundingBoxRenderer _bboxRenderer;
 
 		private Model _model;
 		private ShadingMode _shadingMode;
@@ -72,12 +73,15 @@ namespace XBuilder.ContentPreview.Rendering
 				parentControl.Invalidate();
 			};
 
-			_widgets = new ModelRendererWidget[3];
+			_widgets = new ModelRendererWidget[4];
 			_widgets[0] = new GridRenderer(parentControl);
 			_widgets[1] = new CubeRenderer(parentControl, _ballController);
 
 			_normalsRenderer = new NormalsRenderer(parentControl, this);
 			_widgets[2] = _normalsRenderer;
+
+			_bboxRenderer = new BoundingBoxRenderer(parentControl, this);
+			_widgets[3] = _bboxRenderer;
 		}
 
 		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)
@@ -261,6 +265,11 @@ namespace XBuilder.ContentPreview.Rendering
 		public override void ShowNormals(bool show)
 		{
 			_normalsRenderer.Active = show;
+		}
+
+		public override void ShowBoundingBox(bool show)
+		{
+			_bboxRenderer.Active = show;
 		}
 
 		public override void ToggleAlphaBlend(bool show)

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XBuilder.Options;
+using XBuilder.Xna;
 
 namespace XBuilder.ContentPreview.Rendering
 {
@@ -51,10 +52,10 @@ namespace XBuilder.ContentPreview.Rendering
 			if (meshPart.VertexBuffer == null)
 				return null;
 
-			Vector3[] positions = GetVertexElement(meshPart, VertexElementUsage.Position);
+			Vector3[] positions = VertexElementExtractor.GetVertexElement(meshPart, VertexElementUsage.Position);
 			if (positions == null)
 				return null;
-			Vector3[] normals = GetVertexElement(meshPart, VertexElementUsage.Normal);
+			Vector3[] normals = VertexElementExtractor.GetVertexElement(meshPart, VertexElementUsage.Normal);
 			if (normals == null)
 				return null;
 
@@ -88,24 +89,6 @@ namespace XBuilder.ContentPreview.Rendering
 			normalBuffers.Indices = indexBuffer;
 
 			return normalBuffers;
-		}
-
-		private static Vector3[] GetVertexElement(ModelMeshPart meshPart, VertexElementUsage usage)
-		{
-			VertexDeclaration vd = meshPart.VertexBuffer.VertexDeclaration;
-			VertexElement[] elements = vd.GetVertexElements();
-
-			Func<VertexElement, bool> elementPredicate = ve => ve.VertexElementUsage == usage && ve.VertexElementFormat == VertexElementFormat.Vector3;
-			if (!elements.Any(elementPredicate))
-				return null;
-
-			VertexElement element = elements.First(elementPredicate);
-
-			Vector3[] vertexData = new Vector3[meshPart.NumVertices];
-			meshPart.VertexBuffer.GetData((meshPart.VertexOffset * vd.VertexStride) + element.Offset,
-				vertexData, 0, vertexData.Length, vd.VertexStride);
-
-			return vertexData;
 		}
 
 		public override void Initialize(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice)

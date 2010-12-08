@@ -22,6 +22,7 @@ namespace XBuilder.ContentPreview
 		private OleMenuCommand _fillModeSolid;
 		private OleMenuCommand _fillModeWireframe;
     	private OleMenuCommand _normals;
+		private OleMenuCommand _boundingBox;
 		private OleMenuCommand _alphaBlend;
 
 		private ShadingMode _shadingMode;
@@ -62,6 +63,7 @@ namespace XBuilder.ContentPreview
 				_fillModeWireframe = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeWireframe, ChangeFillModeWireframe);
 				AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarFillModeSolidAndWireframe, ChangeFillModeSolidAndWireframe);
 				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
+				_boundingBox = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarBoundingBox, ToggleBoundingBox);
 				_alphaBlend = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarAlphaBlend, ToggleAlphaBlend);
 			}
 
@@ -102,6 +104,12 @@ namespace XBuilder.ContentPreview
 			ShowNormals();
 		}
 
+		private void ToggleBoundingBox(object sender, EventArgs e)
+		{
+			_boundingBox.Checked = !_boundingBox.Checked;
+			ShowBoundingBox();
+		}
+
 		private void ToggleAlphaBlend(object sender, EventArgs e)
 		{
 			_alphaBlend.Checked = !_alphaBlend.Checked;
@@ -127,6 +135,11 @@ namespace XBuilder.ContentPreview
 		private void ShowNormals()
 		{
 			((ContentPreviewToolWindowControl)base.Content).ShowNormals(_normals.Checked);
+		}
+
+		private void ShowBoundingBox()
+		{
+			((ContentPreviewToolWindowControl)base.Content).ShowBoundingBox(_boundingBox.Checked);
 		}
 
 		private void ToggleAlphaBlend()

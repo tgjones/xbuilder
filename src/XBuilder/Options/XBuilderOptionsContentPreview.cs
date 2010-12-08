@@ -113,6 +113,11 @@ namespace XBuilder.Options
 			}
 		}
 
+		[Category("Bounding Boxes"),
+		DisplayName("Bounding Box Color"),
+		DefaultValue(typeof(Color), "White")]
+		public Color BoundingBoxColor { get; set; }
+
 		public XBuilderOptionsContentPreview()
 		{
 			GridSize = 101;
@@ -126,6 +131,7 @@ namespace XBuilder.Options
 			SolidAndWireframeAlpha = 0.5f;
 			SolidAndWireframeColor = Color.Yellow;
 			SolidAndWireframeDepthBias = -0.00001f;
+			BoundingBoxColor = Color.White;
 		}
 
 		protected override void OnApply(PageApplyEventArgs e)

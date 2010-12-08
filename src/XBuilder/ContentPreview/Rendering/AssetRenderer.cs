@@ -22,6 +22,11 @@ namespace XBuilder.ContentPreview.Rendering
 
 		}
 
+		public virtual void ShowBoundingBox(bool show)
+		{
+
+		}
+
 		public virtual void ToggleAlphaBlend(bool show)
 		{
 

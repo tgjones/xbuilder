@@ -97,7 +97,15 @@
 				</Strings>
 			</Button>
 
-			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarAlphaBlend" priority="0x0104" type="Button">
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarBoundingBox" priority="0x0104" type="Button">
+				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
+				<Strings>
+					<CommandName>cmdidContentPreviewToolbarBoundingBox</CommandName>
+					<ButtonText>Bounding Boxes</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarAlphaBlend" priority="0x0105" type="Button">
 				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
 				<Strings>
 					<CommandName>cmdidContentPreviewToolbarAlphaBlend</CommandName>
@@ -160,7 +168,8 @@
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeWireframe" value="0x1073" />
 			<IDSymbol name="cmdidContentPreviewToolbarFillModeSolidAndWireframe" value="0x1074" />
 			<IDSymbol name="cmdidContentPreviewToolbarNormals" value="0x1080" />
-			<IDSymbol name="cmdidContentPreviewToolbarAlphaBlend" value="0x1081" />
+			<IDSymbol name="cmdidContentPreviewToolbarBoundingBox" value="0x1081" />
+			<IDSymbol name="cmdidContentPreviewToolbarAlphaBlend" value="0x1082" />
 		</GuidSymbol>
 
 		<GuidSymbol name="guidImages" value="{72f94ffa-50c5-4b0b-9c4e-6feb83c65e97}" >

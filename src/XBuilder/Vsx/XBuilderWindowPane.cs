@@ -9,34 +9,34 @@ namespace XBuilder.Vsx
 	internal static class XBuilderWindowPane
 	{
 		// Fields
-		private static bool failedPaneCreation;
-		private static IVsOutputWindowPane windowPane;
+		private static bool _failedPaneCreation;
+		private static IVsOutputWindowPane _windowPane;
 
 		// Methods
 		internal static void WriteLine(string format, params object[] args)
 		{
-			if ((windowPane == null) && !failedPaneCreation)
+			if ((_windowPane == null) && !_failedPaneCreation)
 			{
-				IVsOutputWindow globalService = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-				Guid gameStudioWindowPane = GuidList.XBuilderWindowPane;
-				if (ErrorHandler.Failed(globalService.GetPane(ref gameStudioWindowPane, out windowPane)))
+				IVsOutputWindow globalService = (IVsOutputWindow) Package.GetGlobalService(typeof(SVsOutputWindow));
+				Guid xBuilderWindowPane = GuidList.XBuilderWindowPane;
+				if (ErrorHandler.Failed(globalService.GetPane(ref xBuilderWindowPane, out _windowPane)))
 				{
 					try
 					{
-						ErrorHandler.ThrowOnFailure(globalService.CreatePane(ref gameStudioWindowPane, "XBuilder", 1, 1));
-						ErrorHandler.ThrowOnFailure(globalService.GetPane(ref gameStudioWindowPane, out windowPane));
+						ErrorHandler.ThrowOnFailure(globalService.CreatePane(ref xBuilderWindowPane, "XBuilder", 1, 1));
+						ErrorHandler.ThrowOnFailure(globalService.GetPane(ref xBuilderWindowPane, out _windowPane));
 					}
 					catch
 					{
-						failedPaneCreation = true;
+						_failedPaneCreation = true;
 						throw;
 					}
 				}
 			}
-			if (windowPane != null)
+			if (_windowPane != null)
 			{
-				ErrorHandler.ThrowOnFailure(windowPane.Activate());
-				ErrorHandler.ThrowOnFailure(windowPane.OutputString(string.Format(CultureInfo.CurrentUICulture, format + "\n", args)));
+				ErrorHandler.ThrowOnFailure(_windowPane.Activate());
+				ErrorHandler.ThrowOnFailure(_windowPane.OutputString(string.Format(CultureInfo.CurrentUICulture, format + "\n", args)));
 			}
 		}
 	}

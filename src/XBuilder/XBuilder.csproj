@@ -137,6 +137,7 @@
     <Compile Include="ContentPreview\ContentPreviewIntegrationManager.cs" />
     <Compile Include="ContentPreview\ContentPreviewService.cs" />
     <Compile Include="ContentPreview\IContentPreviewService.cs" />
+    <Compile Include="ContentPreview\Rendering\BoundingBoxRenderer.cs" />
     <Compile Include="ContentPreview\Rendering\CubeRenderer.cs" />
     <Compile Include="ContentPreview\Rendering\GridRenderer.cs" />
     <Compile Include="ContentPreview\Rendering\ModelChangedEventArgs.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Xna\Building\ContentBuilder.cs" />
     <Compile Include="Xna\Building\ErrorLogger.cs" />
     <Compile Include="Xna\TextureHandler.cs" />
+    <Compile Include="Xna\VertexElementExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

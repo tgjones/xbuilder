@@ -277,6 +277,13 @@ namespace XBuilder.ContentPreview.Rendering
 			Invalidate();
 		}
 
+		public void ShowBoundingBox(bool show)
+		{
+			if (AssetRenderer != null)
+				AssetRenderer.ShowBoundingBox(show);
+			Invalidate();
+		}
+
 		public void ToggleAlphaBlend(bool show)
 		{
 			if (AssetRenderer != null)
