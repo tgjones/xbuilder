@@ -17,5 +17,7 @@ namespace XBuilder
 
     	public const string GuidModelEditorLogicalView = "F3A60F97-E9A3-4FDC-B68A-8BF55D356EC1";
 		public const string GuidModelEditorFactory = "D85DF2A5-F52E-4F1C-943F-6F9AF4689740";
+
+		public static readonly Guid XBuilderWindowPane = new Guid("3B6E8053-369F-4B90-927C-737299FB382E");
     };
 }

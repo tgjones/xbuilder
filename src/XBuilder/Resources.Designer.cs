@@ -77,6 +77,35 @@ namespace XBuilder {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The content pipeline add-in store returned the following error:
+        ///{0}
+        ///The XNA Framework Content Pipeline properties will not be editable unless the problem is fixed..
+        /// </summary>
+        internal static string PipelineAddInInvalidPipeline {
+            get {
+                return ResourceManager.GetString("PipelineAddInInvalidPipeline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XNA Framework version &apos;{0}&apos; is not supported by this installation of XNA Game Studio, or a required component is missing..
+        /// </summary>
+        internal static string PipelineAddInInvalidVersion {
+            get {
+                return ResourceManager.GetString("PipelineAddInInvalidVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The content project does not contain an XnaFrameworkVersion property. The XNA Framework Content Pipeline properties will be disabled..
+        /// </summary>
+        internal static string PipelineAddInMissingVersionProperty {
+            get {
+                return ResourceManager.GetString("PipelineAddInMissingVersionProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content Preview.
         /// </summary>
         internal static string ToolWindowTitle {

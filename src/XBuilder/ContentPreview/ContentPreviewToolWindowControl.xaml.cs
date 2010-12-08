@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Xna.Framework.Content;
 using XBuilder.ContentPreview.Rendering;
+using XBuilder.Vsx;
 using XBuilder.Xna;
 using XBuilder.Xna.Building;
 
@@ -58,7 +59,7 @@ namespace XBuilder.ContentPreview
 		/// <summary>
 		/// Loads a new XNA asset file into the ModelViewerControl.
 		/// </summary>
-		public void LoadFile(string fileName, IEnumerable<string> references)
+		public void LoadFile(string fileName, XnaBuildProperties buildProperties)
 		{
 			if (!_loaded)
 				return;
@@ -80,13 +81,15 @@ namespace XBuilder.ContentPreview
 
 				// Tell the ContentBuilder what to build.
 				_contentBuilder.Clear();
-				_contentBuilder.SetReferences(references);
+				_contentBuilder.SetReferences(buildProperties.ProjectReferences);
 
 				string assetName = fileName;
 				foreach (char c in Path.GetInvalidFileNameChars())
 					assetName = assetName.Replace(c.ToString(), string.Empty);
 				assetName = Path.GetFileNameWithoutExtension(assetName);
-				_contentBuilder.Add(fileName, assetName, null, assetHandler.ProcessorName);
+				_contentBuilder.Add(fileName, assetName, buildProperties.Importer,
+					buildProperties.Processor ?? assetHandler.ProcessorName,
+					buildProperties.ProcessorParameters);
 
 				// Build this new model data.
 				string buildErrorInternal = _contentBuilder.Build();

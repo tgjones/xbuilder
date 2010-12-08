@@ -124,6 +124,17 @@
   <data name="CubeTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Xna\CubeTexture.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="PipelineAddInInvalidPipeline" xml:space="preserve">
+    <value>The content pipeline add-in store returned the following error:
+{0}
+The XNA Framework Content Pipeline properties will not be editable unless the problem is fixed.</value>
+  </data>
+  <data name="PipelineAddInInvalidVersion" xml:space="preserve">
+    <value>XNA Framework version '{0}' is not supported by this installation of XNA Game Studio, or a required component is missing.</value>
+  </data>
+  <data name="PipelineAddInMissingVersionProperty" xml:space="preserve">
+    <value>The content project does not contain an XnaFrameworkVersion property. The XNA Framework Content Pipeline properties will be disabled.</value>
+  </data>
   <data name="ToolWindowTitle" xml:space="preserve">
     <value>Content Preview</value>
   </data>

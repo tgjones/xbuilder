@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using XBuilder.Vsx;
 
 namespace XBuilder.ContentPreview
 {
@@ -107,9 +108,9 @@ namespace XBuilder.ContentPreview
 			ToggleAlphaBlend();
 		}
 
-		public void LoadFile(string fileName, IEnumerable<string> references)
+		public void LoadFile(string fileName, XnaBuildProperties buildProperties)
 		{
-			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, references);
+			((ContentPreviewToolWindowControl)base.Content).LoadFile(fileName, buildProperties);
 
 			//bool isModelLoaded = ((ContentPreviewToolWindowControl) base.Content).IsModelLoaded;
 			//_fillModeSolid.Enabled = _fillModeWireframe.Enabled = isModelLoaded;

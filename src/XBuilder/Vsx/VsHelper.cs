@@ -1,8 +1,10 @@
-using System.Collections.Generic;
+using System;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Xna.PlatformTools.ContentPipeline.Views;
 using VSLangProj;
+using XBuilder.Xna.Building;
 
 namespace XBuilder.Vsx
 {
@@ -34,23 +36,77 @@ namespace XBuilder.Vsx
 			return null;
 		}
 
-		public static IEnumerable<string> GetProjectReferences(IVsHierarchy hierarchy)
+		public static XnaBuildProperties GetXnaBuildProperties(IVsHierarchy hierarchy, uint itemID)
 		{
-			List<string> references = new List<string>();
+			XnaBuildProperties buildProperties = new XnaBuildProperties();
 
 			// Get project object for specified hierarchy.
 			VSProject project = GetProject(hierarchy);
 			if (project == null)
-				return references;
+				throw new InvalidOperationException("Could not find content project for this item.");
 
 			// Get references from project.
 			int referenceCount = project.References.Count;
 			for (int i = 1; i <= referenceCount; ++i)
 			{
 				Reference reference = project.References.Item(i);
-				references.Add(reference.Path);
+				buildProperties.ProjectReferences.Add(reference.Path);
 			}
-			return references;
+
+			IVsBuildPropertyStorage buildPropertyStorage = (IVsBuildPropertyStorage) hierarchy;
+
+			string importer;
+			buildPropertyStorage.GetItemAttribute(itemID, XnaConstants.Importer, out importer);
+			if (!string.IsNullOrEmpty(importer))
+				buildProperties.Importer = importer;
+
+			string processor;
+			buildPropertyStorage.GetItemAttribute(itemID, XnaConstants.Processor, out processor);
+			if (!string.IsNullOrEmpty(processor))
+				buildProperties.Processor = processor;
+
+			if (buildProperties.Processor == null)
+				return buildProperties;
+
+			// TODO: Look into caching ContentPipelineManager, but then we need to take care of refreshing it
+			// when the content project references change.
+			ContentPipelineManager contentPipelineManager = new ContentPipelineManager(project.References, XnaConstants.XnaFrameworkVersion);
+			var processorParameters = contentPipelineManager.GetProcessorParameters(buildProperties.Processor);
+
+			foreach (IParameterDescriptor processorParameter in processorParameters)
+			{
+				string propertyValue;
+				buildPropertyStorage.GetItemAttribute(itemID, XnaConstants.ProcessorParametersPrefix + processorParameter.PropertyName, out propertyValue);
+				buildProperties.ProcessorParameters.Add(XnaConstants.ProcessorParametersPrefix + processorParameter.PropertyName, propertyValue);
+			}
+
+			/*
+			// Cannot use MSBuild object model because it uses a static instance of the Engine.
+			XDocument projectDocument = XDocument.Load(project.Project.FullName);
+			string projectFolder = Path.GetDirectoryName(project.Project.FullName);
+
+			var projectItem = projectDocument.Descendants().FirstOrDefault(n =>
+			{
+				XAttribute attr = n.Attribute("Include");
+				if (attr == null)
+					return false;
+
+				string includeValue = attr.Value;
+				return string.Equals(Path.Combine(projectFolder, includeValue), fileName, StringComparison.InvariantCultureIgnoreCase);
+			});
+			if (projectItem == null)
+					throw new InvalidOperationException("Could not find item in project.");
+
+			if (projectItem.Element(PropertyNames.Importer) != null)
+				buildProperties.Importer = projectItem.Element(PropertyNames.Importer).Value;
+			if (projectItem.Element(PropertyNames.Processor) != null)
+				buildProperties.Processor = projectItem.Element(PropertyNames.Processor).Value;
+
+			foreach (XElement processorParameter in projectItem.Elements().Where(e => e.Name.LocalName.StartsWith(PropertyNames.ProcessorParametersPrefix)))
+				buildProperties.ProcessorParameters.Add(processorParameter.Name.LocalName, processorParameter.Value);
+			 * */
+
+			return buildProperties;
 		}
 	}
 }

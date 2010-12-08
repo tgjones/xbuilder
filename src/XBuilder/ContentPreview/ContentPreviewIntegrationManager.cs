@@ -44,7 +44,8 @@ namespace XBuilder.ContentPreview
 
 			IVsHierarchy hierarchy;
 			string fileName;
-			menuCommand.Visible = GetSelectedFileDetails(menuCommand, out hierarchy, out fileName) 
+			uint itemID;
+			menuCommand.Visible = GetSelectedFileDetails(menuCommand, out hierarchy, out itemID, out fileName) 
 				&& FileExtensionUtility.IsInspectableFile(_optionsService, fileName);
 		}
 
@@ -52,15 +53,16 @@ namespace XBuilder.ContentPreview
 		{
 			IVsHierarchy hierarchy;
 			string fileName;
+			uint itemID;
 
-			if (GetSelectedFileDetails(sender as OleMenuCommand, out hierarchy, out fileName))
+			if (GetSelectedFileDetails(sender as OleMenuCommand, out hierarchy, out itemID, out fileName))
 			{
 				IContentPreviewService previewService = _package.GetService<IContentPreviewService>();
-				previewService.ShowPreview(hierarchy, fileName);	
+				previewService.ShowPreview(hierarchy, itemID, fileName);	
 			}
 		}
 
-		private static bool GetSelectedFileDetails(OleMenuCommand menuCommand, out IVsHierarchy hierarchy, out string fileName)
+		private static bool GetSelectedFileDetails(OleMenuCommand menuCommand, out IVsHierarchy hierarchy, out uint itemID, out string fileName)
 		{
 			if (menuCommand != null)
 			{
@@ -68,7 +70,6 @@ namespace XBuilder.ContentPreview
 				IntPtr ppHier;
 				IVsMultiItemSelect ppMIS;
 				IntPtr ppSC;
-				uint itemID;
 				monitorSelection.GetCurrentSelection(out ppHier, out itemID, out ppMIS, out ppSC);
 				hierarchy = Marshal.GetTypedObjectForIUnknown(ppHier, typeof(IVsHierarchy)) as IVsHierarchy;
 
@@ -80,6 +81,7 @@ namespace XBuilder.ContentPreview
 			}
 
 			hierarchy = null;
+			itemID = 0;
 			fileName = null;
 			return false;
 		}

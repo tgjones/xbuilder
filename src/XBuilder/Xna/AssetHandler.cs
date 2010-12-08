@@ -11,7 +11,7 @@ namespace XBuilder.Xna
 		public abstract AssetRenderer Renderer { get; }
 		public abstract string ProcessorName { get; }
 
-		public AssetHandler(ContentManager contentManager, GraphicsDeviceControl graphicsDeviceControl)
+		protected AssetHandler(ContentManager contentManager, GraphicsDeviceControl graphicsDeviceControl)
 		{
 			ContentManager = contentManager;
 			GraphicsDeviceControl = graphicsDeviceControl;

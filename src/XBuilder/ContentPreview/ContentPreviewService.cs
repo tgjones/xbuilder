@@ -30,14 +30,14 @@ namespace XBuilder.ContentPreview
 			return (ContentPreviewToolWindow)window;
 		}
 
-		public void ShowPreview(IVsHierarchy hierarchy, string fileName)
+		public void ShowPreview(IVsHierarchy hierarchy, uint itemID, string fileName)
 		{
 			if (FileExtensionUtility.IsInspectableFile(_optionsService, fileName))
 			{
 				ContentPreviewToolWindow window = ShowPreviewInternal();
 
-				IEnumerable<string> references = VsHelper.GetProjectReferences(hierarchy);
-				window.LoadFile(fileName, references);
+				XnaBuildProperties buildProperties = VsHelper.GetXnaBuildProperties(hierarchy, itemID);
+				window.LoadFile(fileName, buildProperties);
 			}
 		}
 

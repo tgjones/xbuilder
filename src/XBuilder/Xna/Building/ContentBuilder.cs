@@ -123,7 +123,7 @@ namespace XBuilder.Xna.Building
 
 			_buildProject.SetProperty("XnaPlatform", "Windows");
 			_buildProject.SetProperty("XnaProfile", "Reach");
-			_buildProject.SetProperty("XnaFrameworkVersion", "v4.0");
+			_buildProject.SetProperty("XnaFrameworkVersion", XnaConstants.XnaFrameworkVersion);
 			_buildProject.SetProperty("Configuration", "Release");
 			_buildProject.SetProperty("OutputPath", outputPath);
 
@@ -147,24 +147,28 @@ namespace XBuilder.Xna.Building
 		/// be autodetected based on the file extension, and if you leave the
 		/// processor null, data will be passed through without any processing.
 		/// </summary>
-		public void Add(string filename, string name, string importer, string processor)
+		public void Add(string fileName, string name, string importer, string processor, Dictionary<string, string> processorParameters)
 		{
-			// If item has already been added, don't need to add it again.
-			if (_projectItems.Any(pi => pi.UnevaluatedInclude == filename))
-				return;
+			// If item has already been added, don't need to add it again, but we should update build settings.
+			ProjectItem item = _projectItems.FirstOrDefault(pi => pi.UnevaluatedInclude == fileName);
+			if (item == null)
+			{
+				item = _buildProject.AddItem("Compile", fileName)[0];
 
-			ProjectItem item = _buildProject.AddItem("Compile", filename)[0];
+				item.SetMetadataValue("Link", Path.GetFileName(fileName));
+				item.SetMetadataValue("Name", name);
 
-			item.SetMetadataValue("Link", Path.GetFileName(filename));
-			item.SetMetadataValue("Name", name);
+				_projectItems.Add(item);
+			}
 
 			if (!string.IsNullOrEmpty(importer))
-				item.SetMetadataValue("Importer", importer);
+				item.SetMetadataValue(XnaConstants.Importer, importer);
 
 			if (!string.IsNullOrEmpty(processor))
-				item.SetMetadataValue("Processor", processor);
+				item.SetMetadataValue(XnaConstants.Processor, processor);
 
-			_projectItems.Add(item);
+			foreach (var kvp in processorParameters.Where(kvp => !string.IsNullOrEmpty(kvp.Value)))
+				item.SetMetadataValue(kvp.Key, kvp.Value);
 		}
 
 		/// <summary>
