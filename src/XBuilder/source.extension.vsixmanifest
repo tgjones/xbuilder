@@ -3,11 +3,11 @@
 	<Identifier Id="22f79c21-2040-4b57-af48-7ad329431082">
 		<Name>XBuilder</Name>
 		<Author>Tim Jones (Formosatek)</Author>
-		<Version>0.1.0.0</Version>
+		<Version>0.2.0.0</Version>
 		<Description xml:space="preserve">XBuilder is an extension for Visual Studio 2010 which adds the ability to preview models and textures from your XNA content projects, right inside Visual Studio.</Description>
 		<Locale>1033</Locale>
 		<MoreInfoUrl>https://github.com/formosatek/xbuilder</MoreInfoUrl>
-		<License>LICENSE.txt</License>
+		<License>LicenseForVsix.txt</License>
 		<GettingStartedGuide>https://github.com/formosatek/xbuilder/wiki</GettingStartedGuide>
 		<Icon>ZoomHS.png</Icon>
 		<InstalledByMsi>false</InstalledByMsi>
