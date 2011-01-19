@@ -133,7 +133,7 @@
         <Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
         <Strings>
           <CommandName>cmdidContentPreviewToolbarTextureSize</CommandName>
-          <ButtonText>Texture Zoom</ButtonText>
+          <ButtonText>Texture Fit</ButtonText>
         </Strings>
       </Button>
       
