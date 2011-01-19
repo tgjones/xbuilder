@@ -34,7 +34,7 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 			_parentControl = parentControl;
 			_spriteBatch = new SpriteBatch(graphicsDevice);
-            _fitToWindow = true;
+            _fitToWindow = false;
             Resize();
             
             
@@ -63,11 +63,11 @@ namespace XBuilder.ContentPreview.Rendering
             _fitToWindow = show;
             if (_fitToWindow)
             {
-                _textureRectangle = _texture.Bounds;         
+                _textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
             }
             else
             {
-                _textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
+                _textureRectangle = _texture.Bounds;         
             }
             _parentControl.Invalidate();
         }
