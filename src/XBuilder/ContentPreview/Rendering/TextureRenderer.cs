@@ -11,6 +11,9 @@ namespace XBuilder.ContentPreview.Rendering
 		private Control _parentControl;
         private Rectangle _textureRectangle;
         private Rectangle _displayRectangle;
+
+        private bool _fitToWindow;
+
 		/// <summary>
 		/// Gets or sets the current texture.
 		/// </summary>
@@ -21,7 +24,9 @@ namespace XBuilder.ContentPreview.Rendering
 			set
 			{
 				_texture = value;
-				
+
+                if(_texture != null)
+                    ToggleTextureSize(_fitToWindow);
 			}
 		}
 
@@ -29,12 +34,14 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 			_parentControl = parentControl;
 			_spriteBatch = new SpriteBatch(graphicsDevice);
+            _fitToWindow = true;
             Resize();
-            ToggleTextureSize(true);
-
+            
+            
             parentControl.Resize += (sender, e) =>
             {
                 Resize();
+                _parentControl.Invalidate();
             };
 
 
@@ -46,14 +53,14 @@ namespace XBuilder.ContentPreview.Rendering
                                              _parentControl.DisplayRectangle.Y,
                                              _parentControl.DisplayRectangle.Width,
                                              _parentControl.DisplayRectangle.Height);
-
             
-            _parentControl.Invalidate();
+            //ToggleTextureSize(_fitToWindow);
         }
 
         public override void ToggleTextureSize(bool show)
         {
-            if(show)
+            _fitToWindow = show;
+            if (_fitToWindow)
             {
                 _textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
             }

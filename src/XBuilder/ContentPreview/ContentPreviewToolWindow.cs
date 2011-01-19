@@ -219,16 +219,13 @@ namespace XBuilder.ContentPreview
 					_primitivePlane.Enabled = false;
 					_primitiveTeapot.Enabled = false;
 
-                    _normals.Visible = true;
                     _textureSize.Enabled = false;
-                    _textureSize.Visible = false;
 					break;
 				case AssetType.Texture:
 					_fillModeSolid.Enabled = false;
 					_fillModeWireframe.Enabled = false;
 					_fillModeSolidAndWireframe.Enabled = false;
 					_normals.Enabled = false;
-                    _normals.Visible = false;
 					_alphaBlend.Enabled = false;
 					_boundingBox.Enabled = false;
 					_primitiveSphere.Enabled = false;
@@ -240,7 +237,6 @@ namespace XBuilder.ContentPreview
 
 
                     _textureSize.Enabled = true;
-                    _textureSize.Visible = true;
 					break;
 			}
 
