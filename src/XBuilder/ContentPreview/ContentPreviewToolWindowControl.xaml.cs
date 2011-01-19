@@ -157,6 +157,11 @@ namespace XBuilder.ContentPreview
 			graphicsDeviceControl.ToggleAlphaBlend(show);
 		}
 
+        public void ToggleTextureSize(bool show)
+        {
+            graphicsDeviceControl.ToggleTextureSize(show);
+        }
+
 		protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
 		{
 			graphicsDeviceControl.RaiseMouseWheel(e);

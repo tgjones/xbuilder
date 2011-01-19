@@ -298,6 +298,13 @@ namespace XBuilder.ContentPreview.Rendering
 			Invalidate();
 		}
 
+        public void ToggleTextureSize(bool show)
+        {
+            if (AssetRenderer != null)
+                AssetRenderer.ToggleTextureSize(show);
+            Invalidate();
+        }
+
 		public event MouseWheelEventHandler MouseWheelWpf;
 
 		public void RaiseMouseWheel(MouseWheelEventArgs mouseWheelEventArgs)

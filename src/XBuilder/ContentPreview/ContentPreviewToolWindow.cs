@@ -23,6 +23,7 @@ namespace XBuilder.ContentPreview
     	private OleMenuCommand _normals;
 		private OleMenuCommand _boundingBox;
 		private OleMenuCommand _alphaBlend;
+        private OleMenuCommand _textureSize;
 
 		private ShadingMode _shadingMode;
 		private Primitive _primitive;
@@ -75,6 +76,7 @@ namespace XBuilder.ContentPreview
 				_normals = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarNormals, ToggleNormals);
 				_boundingBox = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarBoundingBox, ToggleBoundingBox);
 				_alphaBlend = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarAlphaBlend, ToggleAlphaBlend);
+                _textureSize = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarTextureSize, ToggleTextureSize);
 
 				_primitiveSphere = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveSphere, ChangePrimitiveSphere);
 				_primitiveCube = AddCommand(mcs, PkgCmdIDList.cmdidContentPreviewToolbarPrimitiveCube, ChangePrimitiveCube);
@@ -88,6 +90,7 @@ namespace XBuilder.ContentPreview
 				_fillModeSolidAndWireframe.Enabled = false;
 				_normals.Enabled = false;
 				_alphaBlend.Enabled = false;
+                _textureSize.Enabled = false;
 				_boundingBox.Enabled = false;
 				_primitiveSphere.Enabled = false;
 				_primitiveCube.Enabled = false;
@@ -182,6 +185,12 @@ namespace XBuilder.ContentPreview
 			ToggleAlphaBlend();
 		}
 
+        private void ToggleTextureSize(object sender, EventArgs e)
+        {
+            _textureSize.Checked = !_textureSize.Checked;
+            ToggleTextureSize();
+        }
+
 		public void LoadFile(string fileName, XnaBuildProperties buildProperties)
 		{
 			_fillModeSolid.Enabled = true;
@@ -189,6 +198,7 @@ namespace XBuilder.ContentPreview
 			_fillModeSolidAndWireframe.Enabled = true;
 			_normals.Enabled = true;
 			_alphaBlend.Enabled = true;
+            _textureSize.Enabled = true;
 			_boundingBox.Enabled = true;
 			_primitiveSphere.Enabled = true;
 			_primitiveCube.Enabled = true;
@@ -208,12 +218,17 @@ namespace XBuilder.ContentPreview
 					_primitiveTorus.Enabled = false;
 					_primitivePlane.Enabled = false;
 					_primitiveTeapot.Enabled = false;
+
+                    _normals.Visible = true;
+                    _textureSize.Enabled = false;
+                    _textureSize.Visible = false;
 					break;
 				case AssetType.Texture:
 					_fillModeSolid.Enabled = false;
 					_fillModeWireframe.Enabled = false;
 					_fillModeSolidAndWireframe.Enabled = false;
 					_normals.Enabled = false;
+                    _normals.Visible = false;
 					_alphaBlend.Enabled = false;
 					_boundingBox.Enabled = false;
 					_primitiveSphere.Enabled = false;
@@ -222,6 +237,10 @@ namespace XBuilder.ContentPreview
 					_primitiveTorus.Enabled = false;
 					_primitivePlane.Enabled = false;
 					_primitiveTeapot.Enabled = false;
+
+
+                    _textureSize.Enabled = true;
+                    _textureSize.Visible = true;
 					break;
 			}
 
@@ -258,6 +277,11 @@ namespace XBuilder.ContentPreview
 		{
 			((ContentPreviewToolWindowControl)base.Content).ToggleAlphaBlend(_alphaBlend.Checked);
 		}
+
+        private void ToggleTextureSize()
+        {
+            ((ContentPreviewToolWindowControl)base.Content).ToggleTextureSize(_textureSize.Checked);
+        }
     }
 
 	public enum ShadingMode

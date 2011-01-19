@@ -36,5 +36,10 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 
 		}
+
+        public virtual void ToggleTextureSize(bool show)
+        {
+
+        }
 	}
 }

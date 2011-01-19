@@ -129,6 +129,14 @@
 				</Strings>
 			</Button>
 
+      <Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarTextureSize" priority="0x0106" type="Button">
+        <Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarGroup"/>
+        <Strings>
+          <CommandName>cmdidContentPreviewToolbarTextureSize</CommandName>
+          <ButtonText>Texture Zoom</ButtonText>
+        </Strings>
+      </Button>
+      
 			<Button guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveSphere" priority="0x0101" type="Button">
 				<Parent guid="guidModelViewerCmdSet" id="cmdidContentPreviewToolbarPrimitiveMenuGroup"/>
 				<Strings>
@@ -235,6 +243,7 @@
 			<IDSymbol name="cmdidContentPreviewToolbarNormals" value="0x1080" />
 			<IDSymbol name="cmdidContentPreviewToolbarBoundingBox" value="0x1081" />
 			<IDSymbol name="cmdidContentPreviewToolbarAlphaBlend" value="0x1082" />
+      <IDSymbol name="cmdidContentPreviewToolbarTextureSize" value="0x1083" />
 			
 			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveMenuController" value="0x1090" />
 			<IDSymbol name="cmdidContentPreviewToolbarPrimitiveMenuGroup" value="0x1091" />

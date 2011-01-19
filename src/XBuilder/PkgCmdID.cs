@@ -18,6 +18,7 @@
 		public const int cmdidContentPreviewToolbarNormals = 0x1080;
 		public const int cmdidContentPreviewToolbarBoundingBox = 0x1081;
 		public const int cmdidContentPreviewToolbarAlphaBlend = 0x1082;
+        public const int cmdidContentPreviewToolbarTextureSize = 0x1083;
 
 		public const int cmdidContentPreviewToolbarPrimitiveMenuController = 0x1090;
 		public const int cmdidContentPreviewToolbarPrimitiveMenuGroup = 0x1091;
