@@ -25,8 +25,7 @@ namespace XBuilder.ContentPreview.Rendering
 			{
 				_texture = value;
 
-                if(_texture != null)
-                    ToggleTextureSize(_fitToWindow);
+                ToggleTextureSize(_fitToWindow);
 			}
 		}
 
@@ -37,14 +36,11 @@ namespace XBuilder.ContentPreview.Rendering
             _fitToWindow = false;
             Resize();
             
-            
             parentControl.Resize += (sender, e) =>
             {
                 Resize();
                 _parentControl.Invalidate();
             };
-
-
 		}
 
         private void Resize()
@@ -54,13 +50,16 @@ namespace XBuilder.ContentPreview.Rendering
                                              _parentControl.DisplayRectangle.Width,
                                              _parentControl.DisplayRectangle.Height);
             
-            if(_texture != null)
-                ToggleTextureSize(_fitToWindow);
+            ToggleTextureSize(_fitToWindow);
         }
 
         public override void ToggleTextureSize(bool show)
         {
             _fitToWindow = show;
+
+            if (_texture == null)
+                return;
+         
             if (_fitToWindow)
             {
                 _textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
