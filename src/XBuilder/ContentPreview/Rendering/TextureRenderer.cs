@@ -33,7 +33,7 @@ namespace XBuilder.ContentPreview.Rendering
 		{
 			_parentControl = parentControl;
 			_spriteBatch = new SpriteBatch(graphicsDevice);
-            _fitToWindow = false;
+            _fitToWindow = true;
             Resize();
             
             parentControl.Resize += (sender, e) =>
@@ -53,25 +53,29 @@ namespace XBuilder.ContentPreview.Rendering
             ToggleTextureSize(_fitToWindow);
         }
 
-        public override void ToggleTextureSize(bool show)
-        {
-            _fitToWindow = show;
+		public override void ToggleTextureSize(bool show)
+		{
+			_fitToWindow = show;
 
-            if (_texture == null)
-                return;
-         
-            if (_fitToWindow)
-            {
-                _textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
-            }
-            else
-            {
-                _textureRectangle = _texture.Bounds;         
-            }
-            _parentControl.Invalidate();
-        }
+			if (_texture == null)
+				return;
 
-        private Rectangle ScaleToFit(Rectangle destinationRectangle, Rectangle rectangleToScale)
+			if (_fitToWindow)
+			{
+				_textureRectangle = ScaleToFit(_displayRectangle, _texture.Bounds);
+			}
+			else
+			{
+				// Centre texture within bounds.
+				_textureRectangle = new Rectangle((_displayRectangle.Width - _texture.Bounds.Width) / 2,
+					(_displayRectangle.Height - _texture.Bounds.Height) / 2,
+					_texture.Bounds.Width,
+					_texture.Bounds.Height);
+			}
+			_parentControl.Invalidate();
+		}
+
+		private Rectangle ScaleToFit(Rectangle destinationRectangle, Rectangle rectangleToScale)
         {
             Rectangle rect = destinationRectangle;
             rect.Inflate(-1, -1);

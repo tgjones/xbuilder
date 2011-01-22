@@ -90,6 +90,7 @@ namespace XBuilder.ContentPreview
 				_fillModeSolidAndWireframe.Enabled = false;
 				_normals.Enabled = false;
 				_alphaBlend.Enabled = false;
+				_textureSize.Checked = true;
                 _textureSize.Enabled = false;
 				_boundingBox.Enabled = false;
 				_primitiveSphere.Enabled = false;
