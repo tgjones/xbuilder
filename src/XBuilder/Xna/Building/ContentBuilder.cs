@@ -7,6 +7,7 @@ using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using XBuilder.Options;
 
 namespace XBuilder.Xna.Building
 {
@@ -21,6 +22,8 @@ namespace XBuilder.Xna.Building
 	internal class ContentBuilder : IDisposable
 	{
 		#region Fields
+
+		private readonly IServiceProvider _serviceProvider;
 
 		// MSBuild objects used to dynamically build content.
 		private Project _buildProject;
@@ -60,8 +63,9 @@ namespace XBuilder.Xna.Building
 		/// <summary>
 		/// Creates a new content builder.
 		/// </summary>
-		public ContentBuilder()
+		public ContentBuilder(IServiceProvider serviceProvider)
 		{
+			_serviceProvider = serviceProvider;
 			CreateTempDirectory();
 			CreateBuildProject();
 		}
@@ -122,7 +126,10 @@ namespace XBuilder.Xna.Building
 			_buildProject = new Project(_projectRootElement);
 
 			_buildProject.SetProperty("XnaPlatform", "Windows");
-			_buildProject.SetProperty("XnaProfile", "Reach");
+
+			IOptionsService optionsService = (IOptionsService) _serviceProvider.GetService(typeof (IOptionsService));
+			_buildProject.SetProperty("XnaProfile", optionsService.GetContentPreviewOptions().Profile.ToString());
+
 			_buildProject.SetProperty("XnaFrameworkVersion", XnaConstants.XnaFrameworkVersion);
 			_buildProject.SetProperty("Configuration", "Release");
 			_buildProject.SetProperty("OutputPath", outputPath);

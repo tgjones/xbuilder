@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
+using XBuilder.Options;
 
 namespace XBuilder.ContentPreview.Rendering
 {
@@ -26,12 +27,11 @@ namespace XBuilder.ContentPreview.Rendering
 
 		#endregion
 
-
 		/// <summary>
 		/// Constructor is private, because this is a singleton class:
 		/// client controls should use the public AddRef method instead.
 		/// </summary>
-		GraphicsDeviceService(IntPtr windowHandle, int width, int height)
+		public GraphicsDeviceService(IntPtr windowHandle, int width, int height, IServiceProvider serviceProvider)
 		{
 			parameters = new PresentationParameters();
 
@@ -44,25 +44,25 @@ namespace XBuilder.ContentPreview.Rendering
 			parameters.MultiSampleCount = 4;
 			parameters.IsFullScreen = false;
 
+			IOptionsService optionsService = (IOptionsService)serviceProvider.GetService(typeof(IOptionsService));
 			graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,
-												GraphicsProfile.Reach,
-												parameters);
+				optionsService.GetContentPreviewOptions().Profile,
+				parameters);
 		}
-
 
 		/// <summary>
 		/// Gets a reference to the singleton instance.
 		/// </summary>
-		public static GraphicsDeviceService AddRef(IntPtr windowHandle,
-												   int width, int height)
+		public static GraphicsDeviceService AddRef(IntPtr windowHandle, int width, int height,
+			IServiceProvider serviceProvider)
 		{
 			// Increment the "how many controls sharing the device" reference count.
 			if (Interlocked.Increment(ref referenceCount) == 1)
 			{
 				// If this is the first control to start using the
 				// device, we must create the singleton instance.
-				singletonInstance = new GraphicsDeviceService(windowHandle,
-															  width, height);
+				singletonInstance = new GraphicsDeviceService(windowHandle, width, height,
+					serviceProvider);
 			}
 
 			return singletonInstance;

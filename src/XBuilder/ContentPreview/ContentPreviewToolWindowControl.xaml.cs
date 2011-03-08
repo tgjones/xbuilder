@@ -40,7 +40,7 @@ namespace XBuilder.ContentPreview
 		{
 			_package = package;
 			graphicsDeviceControl.Initialize(_package);
-			_contentBuilder = new ContentBuilder();
+			_contentBuilder = new ContentBuilder(package);
 			_contentManager = new ContentManager(graphicsDeviceControl.Services, _contentBuilder.OutputDirectory);
 
 			Loaded += (sender, e) =>

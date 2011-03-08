@@ -55,8 +55,8 @@ namespace XBuilder.ContentPreview.Rendering
 			if (!DesignMode)
 			{
 				_graphicsDeviceService = GraphicsDeviceService.AddRef(Handle,
-																	 ClientSize.Width,
-																	 ClientSize.Height);
+					ClientSize.Width, ClientSize.Height,
+					_services);
 
 				// Register the service, so components like ContentManager can find it.
 				_services.AddService(typeof(IGraphicsDeviceService), _graphicsDeviceService);

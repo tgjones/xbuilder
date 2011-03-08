@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace XBuilder.Options
 {
@@ -118,6 +119,11 @@ namespace XBuilder.Options
 		DefaultValue(typeof(Color), "White")]
 		public Color BoundingBoxColor { get; set; }
 
+		[Category("XNA"),
+		DisplayName("Graphics Profile"),
+		DefaultValue(typeof(GraphicsProfile), "Reach")]
+		public GraphicsProfile Profile { get; set; }
+
 		public XBuilderOptionsContentPreview()
 		{
 			GridSize = 101;
@@ -132,6 +138,7 @@ namespace XBuilder.Options
 			SolidAndWireframeColor = Color.Yellow;
 			SolidAndWireframeDepthBias = -0.00001f;
 			BoundingBoxColor = Color.White;
+			Profile = GraphicsProfile.Reach;
 		}
 
 		protected override void OnApply(PageApplyEventArgs e)
